@@ -7,7 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "duckdb/main/rl_model_interface.hpp"
-#include "duckdb/main/rl_cardinality_model.hpp"
+#include "duckdb/main/rl_boosting_model.hpp"
 #include "duckdb/main/client_context.hpp"
 #include "duckdb/common/printer.hpp"
 #include "duckdb/optimizer/rl_feature_collector.hpp"
@@ -436,8 +436,8 @@ idx_t RLModelInterface::GetCardinalityEstimate(const OperatorFeatures &features)
 	// Convert features to vector
 	auto feature_vec = FeaturesToVector(features);
 
-	// Call the singleton model's Predict method
-	double predicted_cardinality = RLCardinalityModel::Get().Predict(feature_vec);
+	// Call the singleton model's Predict method (XGBoost)
+	double predicted_cardinality = RLBoostingModel::Get().Predict(feature_vec);
 
 	// If model returns 0, use DuckDB's estimate
 	if (predicted_cardinality <= 0.0) {
@@ -507,24 +507,31 @@ void RLModelInterface::CollectActualCardinalitiesRecursive(PhysicalOperator &op,
 			// Mark as collected
 			op.rl_state->has_actual_cardinality = true;
 
-			// SYNCHRONOUS TRAINING: Train immediately on this sample
-			// This prevents temporal mismatch where predictions are stale
-			auto &model = RLCardinalityModel::Get();
-			model.Update(op.rl_state->feature_vector,
-			             actual_cardinality,
-			             op.rl_state->rl_predicted_cardinality);
-
-			// Also add to buffer for monitoring/statistics
+			// Add to buffer first
 			buffer.AddSample(op.rl_state->feature_vector,
 			                 actual_cardinality,
 			                 op.rl_state->rl_predicted_cardinality);
 
-			// Simplified logging - just show what was collected
+			// SYNCHRONOUS INCREMENTAL TRAINING: Train immediately using sliding window
+			// Get recent samples (sliding window: last 200)
+			auto recent_samples = buffer.GetRecentSamples(200);
+
+			if (recent_samples.size() >= 10) {  // Need minimum samples
+				auto &model = RLBoostingModel::Get();
+				model.UpdateIncremental(recent_samples);
+			}
+
+			// Calculate Q-error for logging
+			double q_error = std::max(
+				actual_cardinality / (double)std::max(op.rl_state->rl_predicted_cardinality, (idx_t)1),
+				op.rl_state->rl_predicted_cardinality / (double)std::max(actual_cardinality, (idx_t)1)
+			);
+
+			// Simplified logging
 			Printer::Print("[RL TRAINING] " + op.GetName() + ": Actual=" +
 			               std::to_string(actual_cardinality) + ", Pred=" +
 			               std::to_string(op.rl_state->rl_predicted_cardinality) + ", Q-err=" +
-			               std::to_string(std::max(actual_cardinality / (double)std::max(op.rl_state->rl_predicted_cardinality, (idx_t)1),
-			                                       op.rl_state->rl_predicted_cardinality / (double)std::max(actual_cardinality, (idx_t)1))) + "\n");
+			               std::to_string(q_error) + "\n");
 		}
 	}
 

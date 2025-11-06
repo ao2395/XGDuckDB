@@ -144,11 +144,28 @@ else()
   endif()
 
   target_link_libraries(duckdb PUBLIC ${DUCKDB_LINK_LIBS})
+  # Link XGBoost library file directly to avoid export issues
+  target_link_libraries(duckdb PRIVATE $<BUILD_INTERFACE:$<TARGET_FILE:xgboost>>)
+  target_include_directories(duckdb PRIVATE
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/xgboost/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/xgboost/rabit/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/xgboost/dmlc-core/include>)
   link_threads(duckdb PUBLIC)
   link_extension_libraries(duckdb PRIVATE)
 
+  # Set RPATH so executable can find XGBoost library at runtime
+  set_target_properties(duckdb PROPERTIES
+    BUILD_RPATH "${CMAKE_BINARY_DIR}/third_party/xgboost"
+    INSTALL_RPATH "@loader_path/../lib")
+
   add_library(duckdb_static STATIC ${ALL_OBJECT_FILES})
   target_link_libraries(duckdb_static PUBLIC ${DUCKDB_LINK_LIBS})
+  # Link XGBoost library file directly to avoid export issues
+  target_link_libraries(duckdb_static PRIVATE $<BUILD_INTERFACE:$<TARGET_FILE:xgboost>>)
+  target_include_directories(duckdb_static PRIVATE
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/xgboost/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/xgboost/rabit/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/xgboost/dmlc-core/include>)
   link_threads(duckdb_static PUBLIC)
   link_extension_libraries(duckdb_static PUBLIC)
 

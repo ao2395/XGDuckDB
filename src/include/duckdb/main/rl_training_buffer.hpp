@@ -47,6 +47,10 @@ public:
 	//! Returns empty vector if buffer is empty
 	vector<RLTrainingSample> GetBatch(idx_t batch_size);
 
+	//! Get the most recent N samples from the buffer (for sliding window training)
+	//! Returns fewer than count if buffer has fewer samples
+	vector<RLTrainingSample> GetRecentSamples(idx_t count);
+
 	//! Get buffer statistics
 	idx_t Size() const;
 	idx_t Capacity() const;

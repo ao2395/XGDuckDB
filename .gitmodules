@@ -1,0 +1,4 @@
+[submodule "third_party/xgboost"]
+	path = third_party/xgboost
+	url = https://github.com/dmlc/xgboost.git
+	branch = release_2.1.0

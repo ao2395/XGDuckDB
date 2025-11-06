@@ -11,7 +11,6 @@
 #include "duckdb/common/common.hpp"
 #include "duckdb/common/unordered_map.hpp"
 #include "duckdb/planner/logical_operator.hpp"
-#include "duckdb/main/rl_cardinality_model.hpp"
 
 namespace duckdb {
 

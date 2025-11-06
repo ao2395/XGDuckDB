@@ -70,6 +70,27 @@ vector<RLTrainingSample> RLTrainingBuffer::GetBatch(idx_t batch_size) {
 	return batch;
 }
 
+vector<RLTrainingSample> RLTrainingBuffer::GetRecentSamples(idx_t count) {
+	lock_guard<mutex> lock(buffer_lock);
+
+	if (buffer.empty()) {
+		return {};
+	}
+
+	// Determine how many samples to return (min of requested and available)
+	idx_t actual_count = MinValue<idx_t>(count, buffer.size());
+
+	vector<RLTrainingSample> samples;
+	samples.reserve(actual_count);
+
+	// Get the most recent samples (from the end of the deque)
+	for (idx_t i = buffer.size() - actual_count; i < buffer.size(); i++) {
+		samples.push_back(buffer[i]);
+	}
+
+	return samples;
+}
+
 idx_t RLTrainingBuffer::Size() const {
 	lock_guard<mutex> lock(buffer_lock);
 	return buffer.size();
