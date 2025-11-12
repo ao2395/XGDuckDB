@@ -513,10 +513,11 @@ void RLModelInterface::CollectActualCardinalitiesRecursive(PhysicalOperator &op,
 			                 op.rl_state->rl_predicted_cardinality);
 
 			// SYNCHRONOUS INCREMENTAL TRAINING: Train immediately using sliding window
-			// Get recent samples (sliding window: last 200)
-			auto recent_samples = buffer.GetRecentSamples(200);
+			// Get recent samples (sliding window: use more samples for better learning)
+			// Using 2000 samples gives the model more context to learn patterns
+			auto recent_samples = buffer.GetRecentSamples(2000);
 
-			if (recent_samples.size() >= 10) {  // Need minimum samples
+			if (recent_samples.size() >= 50) {  // Need minimum samples for meaningful training
 				auto &model = RLBoostingModel::Get();
 				model.UpdateIncremental(recent_samples);
 			}

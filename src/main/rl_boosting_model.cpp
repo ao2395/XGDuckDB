@@ -248,8 +248,13 @@ void RLBoostingModel::UpdateIncremental(const vector<RLTrainingSample> &recent_s
 		lock_guard<mutex> lock(model_lock);
 
 		// Train for multiple iterations to add TREES_PER_UPDATE trees
+		// IMPORTANT: XGBoosterUpdateOneIter's iteration parameter should be the CURRENT iteration
+		// (starting from 0), NOT the total number of trees. Each call adds 1 tree.
 		for (int i = 0; i < TREES_PER_UPDATE; i++) {
-			int ret = XGBoosterUpdateOneIter(booster, num_trees, dtrain);
+			// Use total_updates * TREES_PER_UPDATE + i as the iteration number
+			// This ensures each tree gets a unique iteration ID
+			int iteration = total_updates * TREES_PER_UPDATE + i;
+			int ret = XGBoosterUpdateOneIter(booster, iteration, dtrain);
 			if (ret != 0) {
 				Printer::Print("[RL BOOSTING ERROR] Training iteration failed: " +
 				               std::string(XGBGetLastError()) + "\n");
