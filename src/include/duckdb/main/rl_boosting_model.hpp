@@ -82,11 +82,12 @@ private:
 	// Hyperparameters - chosen for online learning cardinality estimation
 	static constexpr int MAX_DEPTH = 5;                // Moderate complexity
 	static constexpr float LEARNING_RATE = 0.3f;       // Higher for online setting
-	static constexpr int TREES_PER_UPDATE = 2;         // Add 2 trees per query
+	static constexpr int TREES_PER_UPDATE = 1;         // Add 1 tree per operator update
 	static constexpr float SUBSAMPLE = 0.8f;           // Row sampling for regularization
 	static constexpr float COLSAMPLE_BYTREE = 0.8f;    // Feature sampling
 	static constexpr int MIN_CHILD_WEIGHT = 5;         // Regularization
 	static constexpr int FEATURE_VECTOR_SIZE = 64;     // Must match RLModelInterface
+	static constexpr idx_t MAX_TOTAL_TREES = 10000;    // Prevent runaway ensemble growth
 
 	// Sliding window size for training
 	static constexpr idx_t DEFAULT_WINDOW_SIZE = 200;

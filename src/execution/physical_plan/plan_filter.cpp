@@ -26,6 +26,7 @@ PhysicalOperator &PhysicalPlanGenerator::CreatePlan(LogicalFilter &op) {
 	if (rl_estimate > 0) {
 		op.estimated_cardinality = rl_estimate;
 	}
+	const idx_t rl_prediction = rl_estimate > 0 ? rl_estimate : original_duckdb_estimate;
 
 	if (!op.expressions.empty()) {
 		D_ASSERT(!plan.get().GetTypes().empty());
@@ -34,9 +35,7 @@ PhysicalOperator &PhysicalPlanGenerator::CreatePlan(LogicalFilter &op) {
 		filter.children.push_back(plan);
 
 		// Attach RL state to track prediction for training
-		if (rl_estimate > 0) {
-			rl_model.AttachRLState(filter, features, rl_estimate, original_duckdb_estimate);
-		}
+		rl_model.AttachRLState(filter, features, rl_prediction, original_duckdb_estimate);
 
 		plan = filter;
 	}

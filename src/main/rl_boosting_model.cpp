@@ -1,5 +1,6 @@
 #include "duckdb/main/rl_boosting_model.hpp"
 #include "duckdb/common/printer.hpp"
+#include <algorithm>
 #include <cmath>
 #include <string>
 #include <sstream>
@@ -210,9 +211,8 @@ double RLBoostingModel::Predict(const vector<double> &features) {
 	FreeDMatrix(dmat);
 
 	// Clamp log prediction to reasonable range
-	const double MAX_LOG_CARD = 15.0;  // exp(15) ~= 3.3M
 	const double MIN_LOG_CARD = 0.0;   // exp(0) = 1
-	log_cardinality = std::max(MIN_LOG_CARD, std::min(MAX_LOG_CARD, log_cardinality));
+	log_cardinality = std::max(MIN_LOG_CARD, log_cardinality);
 
 	// Convert from log(cardinality) to cardinality
 	double cardinality = std::exp(log_cardinality);
@@ -244,26 +244,44 @@ void RLBoostingModel::UpdateIncremental(const vector<RLTrainingSample> &recent_s
 	}
 
 	// Perform incremental training (exclusive write lock)
+	idx_t trees_added = 0;
+	bool reached_tree_budget = false;
 	{
 		lock_guard<mutex> lock(model_lock);
 
-		// Train for multiple iterations to add TREES_PER_UPDATE trees
-		// IMPORTANT: XGBoosterUpdateOneIter's iteration parameter should be the CURRENT iteration
-		// (starting from 0), NOT the total number of trees. Each call adds 1 tree.
-		for (int i = 0; i < TREES_PER_UPDATE; i++) {
-			// Use total_updates * TREES_PER_UPDATE + i as the iteration number
-			// This ensures each tree gets a unique iteration ID
-			int iteration = total_updates * TREES_PER_UPDATE + i;
-			int ret = XGBoosterUpdateOneIter(booster, iteration, dtrain);
-			if (ret != 0) {
-				Printer::Print("[RL BOOSTING ERROR] Training iteration failed: " +
-				               std::string(XGBGetLastError()) + "\n");
-				break;
-			}
-			num_trees++;
-		}
+		if (num_trees >= MAX_TOTAL_TREES) {
+			reached_tree_budget = true;
+		} else {
+			idx_t remaining_capacity = MAX_TOTAL_TREES - num_trees;
+			idx_t trees_to_add = std::min<idx_t>(remaining_capacity, static_cast<idx_t>(TREES_PER_UPDATE));
+			if (trees_to_add > 0) {
+				// Train for multiple iterations to add TREES_PER_UPDATE trees
+				// IMPORTANT: XGBoosterUpdateOneIter's iteration parameter should be the CURRENT iteration
+				// (starting from 0), NOT the total number of trees. Each call adds 1 tree.
+				for (idx_t i = 0; i < trees_to_add; i++) {
+					// Use total_updates * TREES_PER_UPDATE + i as the iteration number
+					// This ensures each tree gets a unique iteration ID
+					int iteration = total_updates * TREES_PER_UPDATE + static_cast<int>(i);
+					int ret = XGBoosterUpdateOneIter(booster, iteration, dtrain);
+					if (ret != 0) {
+						Printer::Print("[RL BOOSTING ERROR] Training iteration failed: " +
+						               std::string(XGBGetLastError()) + "\n");
+						break;
+					}
+					num_trees++;
+					trees_added++;
+				}
 
-		total_updates++;
+				if (trees_added > 0) {
+					total_updates++;
+				}
+			}
+		}
+	}
+
+	if (reached_tree_budget) {
+		Printer::Print("[RL BOOSTING] Skipping update: reached max tree budget (" +
+		               std::to_string(MAX_TOTAL_TREES) + ")\n");
 	}
 
 	// Clean up

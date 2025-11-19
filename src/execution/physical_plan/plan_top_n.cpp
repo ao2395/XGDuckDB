@@ -17,14 +17,13 @@ PhysicalOperator &PhysicalPlanGenerator::CreatePlan(LogicalTopN &op) {
 	if (rl_estimate > 0) {
 		op.estimated_cardinality = rl_estimate;
 	}
+	const idx_t rl_prediction = rl_estimate > 0 ? rl_estimate : original_duckdb_estimate;
 
 	auto &top_n =
 	    Make<PhysicalTopN>(op.types, std::move(op.orders), NumericCast<idx_t>(op.limit), NumericCast<idx_t>(op.offset),
 	                       std::move(op.dynamic_filter), op.estimated_cardinality);
 	top_n.children.push_back(plan);
-	if (rl_estimate > 0) {
-		rl_model.AttachRLState(top_n, features, rl_estimate, original_duckdb_estimate);
-	}
+	rl_model.AttachRLState(top_n, features, rl_prediction, original_duckdb_estimate);
 	return top_n;
 }
 

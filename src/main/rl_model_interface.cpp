@@ -522,17 +522,25 @@ void RLModelInterface::CollectActualCardinalitiesRecursive(PhysicalOperator &op,
 				model.UpdateIncremental(recent_samples);
 			}
 
-			// Calculate Q-error for logging
-			double q_error = std::max(
+			// Calculate Q-error for RL model
+			double rl_q_error = std::max(
 				actual_cardinality / (double)std::max(op.rl_state->rl_predicted_cardinality, (idx_t)1),
 				op.rl_state->rl_predicted_cardinality / (double)std::max(actual_cardinality, (idx_t)1)
 			);
 
-			// Simplified logging
+			// Calculate Q-error for DuckDB's native estimate (for comparison)
+			double duckdb_q_error = std::max(
+				actual_cardinality / (double)std::max(op.rl_state->duckdb_estimated_cardinality, (idx_t)1),
+				op.rl_state->duckdb_estimated_cardinality / (double)std::max(actual_cardinality, (idx_t)1)
+			);
+
+			// Logging with BOTH predictions for comparison
 			Printer::Print("[RL TRAINING] " + op.GetName() + ": Actual=" +
-			               std::to_string(actual_cardinality) + ", Pred=" +
-			               std::to_string(op.rl_state->rl_predicted_cardinality) + ", Q-err=" +
-			               std::to_string(q_error) + "\n");
+			               std::to_string(actual_cardinality) +
+			               ", RLPred=" + std::to_string(op.rl_state->rl_predicted_cardinality) +
+			               ", DuckPred=" + std::to_string(op.rl_state->duckdb_estimated_cardinality) +
+			               ", RLQerr=" + std::to_string(rl_q_error) +
+			               ", DuckQerr=" + std::to_string(duckdb_q_error) + "\n");
 		}
 	}
 

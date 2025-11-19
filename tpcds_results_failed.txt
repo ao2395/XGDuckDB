@@ -1,0 +1,243 @@
+Failed Queries Summary
+================================================================================
+
+Query 751
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 1265
+Error: Parser Error: syntax error at or near "returns"
+
+Query 1562
+Error: Parser Error: syntax error at or near "returns"
+
+Query 189
+Error: Parser Error: syntax error at or near "at"
+
+Query 963
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 1575
+Error: Parser Error: syntax error at or near "at"
+
+Query 666
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 58
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 72
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 369
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 1958
+Error: Parser Error: syntax error at or near "returns"
+
+Query 864
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 572
+Error: Parser Error: syntax error at or near "returns"
+
+Query 684
+Error: Parser Error: syntax error at or near "at"
+
+Query 671
+Error: Parser Error: syntax error at or near "returns"
+
+Query 157
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 553
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 256
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 454
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 275
+Error: Parser Error: syntax error at or near "returns"
+
+Query 1674
+Error: Parser Error: syntax error at or near "at"
+
+Query 90
+Error: Parser Error: syntax error at or near "at"
+
+Query 1656
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 468
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 1260
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 176
+Error: Parser Error: syntax error at or near "returns"
+
+Query 1661
+Error: Parser Error: syntax error at or near "returns"
+
+Query 783
+Error: Parser Error: syntax error at or near "at"
+
+Query 1971
+Error: Parser Error: syntax error at or near "at"
+
+Query 77
+Error: Parser Error: syntax error at or near "returns"
+
+Query 1278
+Error: Parser Error: syntax error at or near "at"
+
+Query 949
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 1741
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 1859
+Error: Parser Error: syntax error at or near "returns"
+
+Query 1048
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 1246
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 1179
+Error: Parser Error: syntax error at or near "at"
+
+Query 1458
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 270
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 567
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 1364
+Error: Parser Error: syntax error at or near "returns"
+
+Query 1345
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 1642
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 1760
+Error: Parser Error: syntax error at or near "returns"
+
+Query 355
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 1543
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 473
+Error: Parser Error: syntax error at or near "returns"
+
+Query 1067
+Error: Parser Error: syntax error at or near "returns"
+
+Query 968
+Error: Parser Error: syntax error at or near "returns"
+
+Query 171
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 1840
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 1166
+Error: Parser Error: syntax error at or near "returns"
+
+Query 882
+Error: Parser Error: syntax error at or near "at"
+
+Query 1359
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 1939
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 1080
+Error: Parser Error: syntax error at or near "at"
+
+Query 486
+Error: Parser Error: syntax error at or near "at"
+
+Query 1557
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 1062
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 288
+Error: Parser Error: syntax error at or near "at"
+
+Query 1773
+Error: Parser Error: syntax error at or near "at"
+
+Query 1377
+Error: Parser Error: syntax error at or near "at"
+
+Query 765
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 869
+Error: Parser Error: syntax error at or near "returns"
+
+Query 770
+Error: Parser Error: syntax error at or near "returns"
+
+Query 1953
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 1444
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 585
+Error: Parser Error: syntax error at or near "at"
+
+Query 981
+Error: Parser Error: syntax error at or near "at"
+
+Query 850
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 1463
+Error: Parser Error: syntax error at or near "returns"
+
+Query 1872
+Error: Parser Error: syntax error at or near "at"
+
+Query 1755
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 1147
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 374
+Error: Parser Error: syntax error at or near "returns"
+
+Query 1476
+Error: Parser Error: syntax error at or near "at"
+
+Query 1854
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+
+Query 652
+Error: Binder Error: Ambiguous reference to column name "item_id" (use: "ss_items.item_id" or "cs_items.item_id")
+
+Query 387
+Error: Parser Error: syntax error at or near "at"
+
+Query 1161
+Error: Binder Error: Ambiguous reference to column name "d_week_seq" (use: "d1.d_week_seq" or "d2.d_week_seq")
+

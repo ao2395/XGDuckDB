@@ -41,13 +41,12 @@ PhysicalOperator &PhysicalPlanGenerator::PlanComparisonJoin(LogicalComparisonJoi
 	if (rl_estimate > 0) {
 		op.estimated_cardinality = rl_estimate;
 	}
+	const idx_t rl_prediction = rl_estimate > 0 ? rl_estimate : original_duckdb_estimate;
 
 	if (op.conditions.empty()) {
 		// no conditions: insert a cross product
 		auto &cross_product = Make<PhysicalCrossProduct>(op.types, left, right, op.estimated_cardinality);
-		if (rl_estimate > 0) {
-			rl_model.AttachRLState(cross_product, features, rl_estimate, original_duckdb_estimate);
-		}
+		rl_model.AttachRLState(cross_product, features, rl_prediction, original_duckdb_estimate);
 		return cross_product;
 	}
 
@@ -76,9 +75,7 @@ PhysicalOperator &PhysicalPlanGenerator::PlanComparisonJoin(LogicalComparisonJoi
 		                                    op.left_projection_map, op.right_projection_map, std::move(op.mark_types),
 		                                    op.estimated_cardinality, std::move(op.filter_pushdown));
 		join.Cast<PhysicalHashJoin>().join_stats = std::move(op.join_stats);
-		if (rl_estimate > 0) {
-			rl_model.AttachRLState(join, features, rl_estimate, original_duckdb_estimate);
-		}
+		rl_model.AttachRLState(join, features, rl_prediction, original_duckdb_estimate);
 		return join;
 	}
 
@@ -100,27 +97,21 @@ PhysicalOperator &PhysicalPlanGenerator::PlanComparisonJoin(LogicalComparisonJoi
 	if (can_iejoin) {
 		auto &iejoin = Make<PhysicalIEJoin>(op, left, right, std::move(op.conditions), op.join_type, op.estimated_cardinality,
 		                                    std::move(op.filter_pushdown));
-		if (rl_estimate > 0) {
-			rl_model.AttachRLState(iejoin, features, rl_estimate, original_duckdb_estimate);
-		}
+		rl_model.AttachRLState(iejoin, features, rl_prediction, original_duckdb_estimate);
 		return iejoin;
 	}
 	if (can_merge) {
 		// range join: use piecewise merge join
 		auto &merge_join = Make<PhysicalPiecewiseMergeJoin>(op, left, right, std::move(op.conditions), op.join_type,
 		                                                    op.estimated_cardinality, std::move(op.filter_pushdown));
-		if (rl_estimate > 0) {
-			rl_model.AttachRLState(merge_join, features, rl_estimate, original_duckdb_estimate);
-		}
+		rl_model.AttachRLState(merge_join, features, rl_prediction, original_duckdb_estimate);
 		return merge_join;
 	}
 	if (PhysicalNestedLoopJoin::IsSupported(op.conditions, op.join_type)) {
 		// inequality join: use nested loop
 		auto &nl_join = Make<PhysicalNestedLoopJoin>(op, left, right, std::move(op.conditions), op.join_type,
 		                                             op.estimated_cardinality, std::move(op.filter_pushdown));
-		if (rl_estimate > 0) {
-			rl_model.AttachRLState(nl_join, features, rl_estimate, original_duckdb_estimate);
-		}
+		rl_model.AttachRLState(nl_join, features, rl_prediction, original_duckdb_estimate);
 		return nl_join;
 	}
 
@@ -129,9 +120,7 @@ PhysicalOperator &PhysicalPlanGenerator::PlanComparisonJoin(LogicalComparisonJoi
 	}
 	auto condition = JoinCondition::CreateExpression(std::move(op.conditions));
 	auto &blockwise_join = Make<PhysicalBlockwiseNLJoin>(op, left, right, std::move(condition), op.join_type, op.estimated_cardinality);
-	if (rl_estimate > 0) {
-		rl_model.AttachRLState(blockwise_join, features, rl_estimate, original_duckdb_estimate);
-	}
+	rl_model.AttachRLState(blockwise_join, features, rl_prediction, original_duckdb_estimate);
 	return blockwise_join;
 }
 

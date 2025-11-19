@@ -247,6 +247,7 @@ PhysicalOperator &PhysicalPlanGenerator::CreatePlan(LogicalAggregate &op) {
 	if (rl_estimate > 0) {
 		op.estimated_cardinality = rl_estimate;
 	}
+	const idx_t rl_prediction = rl_estimate > 0 ? rl_estimate : original_duckdb_estimate;
 
 	bool can_use_simple_aggregation = true;
 	for (auto &expression : op.expressions) {
@@ -278,17 +279,13 @@ PhysicalOperator &PhysicalPlanGenerator::CreatePlan(LogicalAggregate &op) {
 			auto &group_by = Make<PhysicalUngroupedAggregate>(op.types, std::move(op.expressions),
 			                                                  op.estimated_cardinality, op.distinct_validity);
 			group_by.children.push_back(plan);
-			if (rl_estimate > 0) {
-				rl_model.AttachRLState(group_by, features, rl_estimate, original_duckdb_estimate);
-			}
+			rl_model.AttachRLState(group_by, features, rl_prediction, original_duckdb_estimate);
 			return group_by;
 		}
 		auto &group_by =
 		    Make<PhysicalHashAggregate>(context, op.types, std::move(op.expressions), op.estimated_cardinality);
 		group_by.children.push_back(plan);
-		if (rl_estimate > 0) {
-			rl_model.AttachRLState(group_by, features, rl_estimate, original_duckdb_estimate);
-		}
+		rl_model.AttachRLState(group_by, features, rl_prediction, original_duckdb_estimate);
 		return group_by;
 	}
 
@@ -301,9 +298,7 @@ PhysicalOperator &PhysicalPlanGenerator::CreatePlan(LogicalAggregate &op) {
 		    Make<PhysicalPartitionedAggregate>(context, op.types, std::move(op.expressions), std::move(op.groups),
 		                                       std::move(partition_columns), op.estimated_cardinality);
 		group_by.children.push_back(plan);
-		if (rl_estimate > 0) {
-			rl_model.AttachRLState(group_by, features, rl_estimate, original_duckdb_estimate);
-		}
+		rl_model.AttachRLState(group_by, features, rl_prediction, original_duckdb_estimate);
 		return group_by;
 	}
 
@@ -312,9 +307,7 @@ PhysicalOperator &PhysicalPlanGenerator::CreatePlan(LogicalAggregate &op) {
 		                                                    std::move(op.groups), std::move(op.group_stats),
 		                                                    std::move(required_bits), op.estimated_cardinality);
 		group_by.children.push_back(plan);
-		if (rl_estimate > 0) {
-			rl_model.AttachRLState(group_by, features, rl_estimate, original_duckdb_estimate);
-		}
+		rl_model.AttachRLState(group_by, features, rl_prediction, original_duckdb_estimate);
 		return group_by;
 	}
 
@@ -322,9 +315,7 @@ PhysicalOperator &PhysicalPlanGenerator::CreatePlan(LogicalAggregate &op) {
 	                                             std::move(op.grouping_sets), std::move(op.grouping_functions),
 	                                             op.estimated_cardinality, group_validity, op.distinct_validity);
 	group_by.children.push_back(plan);
-	if (rl_estimate > 0) {
-		rl_model.AttachRLState(group_by, features, rl_estimate, original_duckdb_estimate);
-	}
+	rl_model.AttachRLState(group_by, features, rl_prediction, original_duckdb_estimate);
 	return group_by;
 }
 
