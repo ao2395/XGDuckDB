@@ -1,9 +1,11 @@
 #include "duckdb/main/rl_boosting_model.hpp"
+#include "xgboost/c_api.h"
 #include "duckdb/common/printer.hpp"
 #include <algorithm>
 #include <cmath>
-#include <string>
+#include <cstdio>
 #include <sstream>
+#include <string>
 
 namespace duckdb {
 
@@ -14,15 +16,15 @@ RLBoostingModel &RLBoostingModel::Get() {
 
 RLBoostingModel::RLBoostingModel()
 	: initialized(false), booster(nullptr), num_trees(0), total_updates(0) {
-	Printer::Print("[RL BOOSTING] Initializing XGBoost model for online learning...\n");
+	// Printer::Print("[RL BOOSTING] Initializing XGBoost model for online learning...\n");
 	InitializeBooster();
 	initialized = true;
-	Printer::Print("[RL BOOSTING] XGBoost initialized with hyperparameters:\n");
-	Printer::Print("  max_depth=" + std::to_string(MAX_DEPTH) + "\n");
-	Printer::Print("  learning_rate=" + std::to_string(LEARNING_RATE) + "\n");
-	Printer::Print("  trees_per_update=" + std::to_string(TREES_PER_UPDATE) + "\n");
-	Printer::Print("  subsample=" + std::to_string(SUBSAMPLE) + "\n");
-	Printer::Print("  colsample_bytree=" + std::to_string(COLSAMPLE_BYTREE) + "\n");
+	// Printer::Print("[RL BOOSTING] XGBoost initialized with hyperparameters:\n");
+	// Printer::Print("  max_depth=" + std::to_string(MAX_DEPTH) + "\n");
+	// Printer::Print("  learning_rate=" + std::to_string(LEARNING_RATE) + "\n");
+	// Printer::Print("  trees_per_update=" + std::to_string(TREES_PER_UPDATE) + "\n");
+	// Printer::Print("  subsample=" + std::to_string(SUBSAMPLE) + "\n");
+	// Printer::Print("  colsample_bytree=" + std::to_string(COLSAMPLE_BYTREE) + "\n");
 }
 
 RLBoostingModel::~RLBoostingModel() {
@@ -40,16 +42,16 @@ void RLBoostingModel::InitializeBooster() {
 	DMatrixHandle dtrain;
 	int ret = XGDMatrixCreateFromMat(init_data.data(), 1, FEATURE_VECTOR_SIZE, -1.0f, &dtrain);
 	if (ret != 0) {
-		Printer::Print("[RL BOOSTING ERROR] Failed to create initial DMatrix: " +
-		               std::string(XGBGetLastError()) + "\n");
+		// Printer::Print("[RL BOOSTING ERROR] Failed to create initial DMatrix: " +
+		//                std::string(XGBGetLastError()) + "\n");
 		return;
 	}
 
 	// Set labels
 	ret = XGDMatrixSetFloatInfo(dtrain, "label", init_labels.data(), 1);
 	if (ret != 0) {
-		Printer::Print("[RL BOOSTING ERROR] Failed to set labels: " +
-		               std::string(XGBGetLastError()) + "\n");
+		// Printer::Print("[RL BOOSTING ERROR] Failed to set labels: " +
+		//                std::string(XGBGetLastError()) + "\n");
 		XGDMatrixFree(dtrain);
 		return;
 	}
@@ -57,8 +59,8 @@ void RLBoostingModel::InitializeBooster() {
 	// Create booster
 	ret = XGBoosterCreate(&dtrain, 1, &booster);
 	if (ret != 0) {
-		Printer::Print("[RL BOOSTING ERROR] Failed to create booster: " +
-		               std::string(XGBGetLastError()) + "\n");
+		// Printer::Print("[RL BOOSTING ERROR] Failed to create booster: " +
+		//                std::string(XGBGetLastError()) + "\n");
 		XGDMatrixFree(dtrain);
 		return;
 	}
@@ -161,54 +163,58 @@ double RLBoostingModel::Predict(const vector<double> &features) {
 	// Check if model is ready for prediction (must have real training, not just dummy tree)
 	if (!initialized || !booster || num_trees <= 1) {
 		// Model not ready yet - caller will use DuckDB estimate
+		// Printer::Print("[RL DEBUG] Model not ready for prediction (trees=" + std::to_string(num_trees) + ")\n");
 		return 0.0;
 	}
 
-	// Convert features to float array
-	vector<float> features_float(FEATURE_VECTOR_SIZE);
+	// OPTIMIZATION: Use thread-local storage to create a JSON array interface once per thread
+	thread_local vector<float> features_float;
+	thread_local char array_interface_buffer[256];
+	static const char PREDICT_CONFIG[] =
+	    "{\"type\": 0, \"iteration_begin\": 0, \"iteration_end\": 0, \"strict_shape\": true, \"missing\": NaN}";
+
+	if (features_float.size() != FEATURE_VECTOR_SIZE) {
+		features_float.assign(FEATURE_VECTOR_SIZE, 0.0f);
+	}
+
+	// Convert features to float array (reusing the thread-local buffer)
 	for (idx_t i = 0; i < FEATURE_VECTOR_SIZE; i++) {
 		features_float[i] = static_cast<float>(features[i]);
 	}
 
-	// Create DMatrix for prediction (single row)
-	DMatrixHandle dmat;
-	int ret = XGDMatrixCreateFromMat(
-		features_float.data(),
-		1,  // Single sample
-		FEATURE_VECTOR_SIZE,
-		-1.0f,
-		&dmat
-	);
-
-	if (ret != 0) {
-		Printer::Print("[RL BOOSTING ERROR] Failed to create prediction DMatrix: " +
-		               std::string(XGBGetLastError()) + "\n");
+	// Build __array_interface__ JSON for the single-row dense input
+	int written = snprintf(array_interface_buffer, sizeof(array_interface_buffer),
+	                       "{\"data\": [%zu, true], \"shape\": [1, %zu], \"typestr\": \"<f4\", \"version\": 3}",
+	                       reinterpret_cast<size_t>(features_float.data()), static_cast<size_t>(FEATURE_VECTOR_SIZE));
+	if (written < 0 || written >= static_cast<int>(sizeof(array_interface_buffer))) {
+		Printer::Print("[RL BOOSTING ERROR] Failed to encode array interface for prediction\n");
 		return 0.0;
 	}
 
-	// Perform prediction (thread-safe read)
-	bst_ulong out_len;
-	const float *out_result;
+	const bst_ulong *out_shape = nullptr;
+	bst_ulong out_dim = 0;
+	const float *out_result = nullptr;
 	double log_cardinality;
 
 	{
 		lock_guard<mutex> lock(model_lock);
 
-		// Use XGBoosterPredict for inference
-		ret = XGBoosterPredict(booster, dmat, 0, 0, 0, &out_len, &out_result);
-
-		if (ret != 0 || out_len == 0) {
-			Printer::Print("[RL BOOSTING ERROR] Prediction failed: " +
+		int ret = XGBoosterPredictFromDense(booster, array_interface_buffer, PREDICT_CONFIG, nullptr, &out_shape,
+		                                    &out_dim, &out_result);
+		if (ret != 0 || !out_result || !out_shape || out_dim == 0) {
+			Printer::Print("[RL BOOSTING ERROR] Inplace prediction failed: " +
 			               std::string(XGBGetLastError()) + "\n");
-			FreeDMatrix(dmat);
+			return 0.0;
+		}
+
+		// Expecting shape (1, 1) for a single regression output
+		if (out_dim < 1 || out_shape[0] != 1) {
+			Printer::Print("[RL BOOSTING ERROR] Unexpected prediction shape\n");
 			return 0.0;
 		}
 
 		log_cardinality = static_cast<double>(out_result[0]);
 	}
-
-	// Clean up
-	FreeDMatrix(dmat);
 
 	// Clamp log prediction to reasonable range
 	const double MIN_LOG_CARD = 0.0;   // exp(0) = 1
@@ -220,11 +226,65 @@ double RLBoostingModel::Predict(const vector<double> &features) {
 	// Final safety clamp
 	if (cardinality < 1.0) cardinality = 1.0;
 
-	Printer::Print("[RL BOOSTING] Prediction: log(card)=" + std::to_string(log_cardinality) +
-	               " -> card=" + std::to_string(cardinality) +
-	               " (trees=" + std::to_string(num_trees) + ")\n");
+	// REMOVED: Per-prediction logging (too expensive - 33k+ calls per benchmark)
+	// Printer::Print("[RL BOOSTING] Prediction: log(card)=" + std::to_string(log_cardinality) +
+	//                " -> card=" + std::to_string(cardinality) +
+	//                " (trees=" + std::to_string(num_trees) + ")\n");
 
 	return cardinality;
+}
+
+void RLBoostingModel::PredictBatch(const vector<vector<double>> &feature_matrix, vector<double> &output) {
+	output.clear();
+	if (feature_matrix.empty()) {
+		return;
+	}
+	if (!initialized || !booster || num_trees <= 1) {
+		return;
+	}
+
+	idx_t rows = feature_matrix.size();
+	vector<float> dense(rows * FEATURE_VECTOR_SIZE, 0.0f);
+	for (idx_t row = 0; row < rows; row++) {
+		if (feature_matrix[row].size() != FEATURE_VECTOR_SIZE) {
+			return;
+		}
+		for (idx_t col = 0; col < FEATURE_VECTOR_SIZE; col++) {
+			dense[row * FEATURE_VECTOR_SIZE + col] = static_cast<float>(feature_matrix[row][col]);
+		}
+	}
+
+	DMatrixHandle dmat;
+	int ret = XGDMatrixCreateFromMat(dense.data(), rows, FEATURE_VECTOR_SIZE, -1.0f, &dmat);
+	if (ret != 0) {
+		Printer::Print("[RL BOOSTING ERROR] Failed to create batch prediction DMatrix: " +
+		               std::string(XGBGetLastError()) + "\n");
+		return;
+	}
+
+	bst_ulong out_len;
+	const float *out_result;
+	{
+		lock_guard<mutex> lock(model_lock);
+		ret = XGBoosterPredict(booster, dmat, 0, 0, 0, &out_len, &out_result);
+	}
+	if (ret != 0 || out_len < rows) {
+		Printer::Print("[RL BOOSTING ERROR] Batch prediction failed: " + std::string(XGBGetLastError()) + "\n");
+		FreeDMatrix(dmat);
+		return;
+	}
+
+	output.reserve(rows);
+	for (idx_t i = 0; i < rows; i++) {
+		double log_cardinality = std::max(0.0, static_cast<double>(out_result[i]));
+		double cardinality = std::exp(log_cardinality);
+		if (cardinality < 1.0) {
+			cardinality = 1.0;
+		}
+		output.push_back(cardinality);
+	}
+
+	FreeDMatrix(dmat);
 }
 
 void RLBoostingModel::UpdateIncremental(const vector<RLTrainingSample> &recent_samples) {
@@ -280,8 +340,8 @@ void RLBoostingModel::UpdateIncremental(const vector<RLTrainingSample> &recent_s
 	}
 
 	if (reached_tree_budget) {
-		Printer::Print("[RL BOOSTING] Skipping update: reached max tree budget (" +
-		               std::to_string(MAX_TOTAL_TREES) + ")\n");
+		// Printer::Print("[RL BOOSTING] Skipping update: reached max tree budget (" +
+		//                std::to_string(MAX_TOTAL_TREES) + ")\n");
 	}
 
 	// Clean up
@@ -294,10 +354,10 @@ void RLBoostingModel::UpdateIncremental(const vector<RLTrainingSample> &recent_s
 	}
 	double avg_q_error = total_q_error / recent_samples.size();
 
-	Printer::Print("[RL BOOSTING] Incremental update #" + std::to_string(total_updates) +
-	               ": trained on " + std::to_string(recent_samples.size()) + " samples, " +
-	               "total trees=" + std::to_string(num_trees) +
-	               ", avg Q-error=" + std::to_string(avg_q_error) + "\n");
+	// Printer::Print("[RL BOOSTING] Incremental update #" + std::to_string(total_updates) +
+	//                ": trained on " + std::to_string(recent_samples.size()) + " samples, " +
+	//                "total trees=" + std::to_string(num_trees) +
+	//                ", avg Q-error=" + std::to_string(avg_q_error) + "\n");
 }
 
 void RLBoostingModel::ResetModel() {
@@ -312,12 +372,12 @@ void RLBoostingModel::ResetModel() {
 	total_updates = 0;
 	initialized = false;
 
-	Printer::Print("[RL BOOSTING] Model reset\n");
+	// Printer::Print("[RL BOOSTING] Model reset\n");
 
 	InitializeBooster();
 	initialized = true;
 
-	Printer::Print("[RL BOOSTING] Model reinitialized\n");
+	// Printer::Print("[RL BOOSTING] Model reinitialized\n");
 }
 
 } // namespace duckdb

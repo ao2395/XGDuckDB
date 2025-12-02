@@ -22,18 +22,18 @@ RLTrainingThread::~RLTrainingThread() {
 
 void RLTrainingThread::Start(const RLTrainingConfig &cfg) {
 	if (is_running) {
-		Printer::Print("[RL TRAINING THREAD] Already running\n");
+		// Printer::Print("[RL TRAINING THREAD] Already running\n");
 		return;
 	}
 
 	config = cfg;
 	should_stop = false;
 
-	Printer::Print("[RL TRAINING THREAD] Starting background training with config:\n");
-	Printer::Print("  Batch size: " + std::to_string(config.batch_size) + "\n");
-	Printer::Print("  Min buffer size: " + std::to_string(config.min_buffer_size) + "\n");
-	Printer::Print("  Training interval: " + std::to_string(config.training_interval_ms) + "ms\n");
-	Printer::Print("  Max iterations per cycle: " + std::to_string(config.max_iterations_per_cycle) + "\n");
+	// Printer::Print("[RL TRAINING THREAD] Starting background training with config:\n");
+	// Printer::Print("  Batch size: " + std::to_string(config.batch_size) + "\n");
+	// Printer::Print("  Min buffer size: " + std::to_string(config.min_buffer_size) + "\n");
+	// Printer::Print("  Training interval: " + std::to_string(config.training_interval_ms) + "ms\n");
+	// Printer::Print("  Max iterations per cycle: " + std::to_string(config.max_iterations_per_cycle) + "\n");
 
 	// Start background thread
 	training_thread = std::thread(&RLTrainingThread::TrainingLoop, this);
@@ -45,7 +45,7 @@ void RLTrainingThread::Stop() {
 		return;
 	}
 
-	Printer::Print("[RL TRAINING THREAD] Stopping background training...\n");
+	// Printer::Print("[RL TRAINING THREAD] Stopping background training...\n");
 	should_stop = true;
 	training_cv.notify_all();
 
@@ -54,7 +54,7 @@ void RLTrainingThread::Stop() {
 	}
 
 	is_running = false;
-	Printer::Print("[RL TRAINING THREAD] Stopped. Total updates: " + std::to_string(total_updates.load()) + "\n");
+	// Printer::Print("[RL TRAINING THREAD] Stopped. Total updates: " + std::to_string(total_updates.load()) + "\n");
 }
 
 bool RLTrainingThread::IsRunning() const {
@@ -74,7 +74,7 @@ double RLTrainingThread::GetAverageTrainingLoss() const {
 }
 
 void RLTrainingThread::TrainingLoop() {
-	Printer::Print("[RL TRAINING THREAD] Training loop started\n");
+	// Printer::Print("[RL TRAINING THREAD] Training loop started\n");
 
 	while (!should_stop) {
 		// Wait for training interval or until stopped
@@ -95,7 +95,7 @@ void RLTrainingThread::TrainingLoop() {
 		TrainBatch();
 	}
 
-	Printer::Print("[RL TRAINING THREAD] Training loop exiting\n");
+	// Printer::Print("[RL TRAINING THREAD] Training loop exiting\n");
 }
 
 void RLTrainingThread::TrainBatch() {

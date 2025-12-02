@@ -14,7 +14,7 @@ namespace duckdb {
 
 RLTrainingBuffer::RLTrainingBuffer(idx_t max_size)
     : max_size(max_size), running_q_error_sum(0.0), sample_count(0) {
-	Printer::Print("[RL TRAINING BUFFER] Initialized with capacity: " + std::to_string(max_size) + "\n");
+	// Printer::Print("[RL TRAINING BUFFER] Initialized with capacity: " + std::to_string(max_size) + "\n");
 }
 
 RLTrainingBuffer::~RLTrainingBuffer() {

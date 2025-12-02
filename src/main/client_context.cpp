@@ -53,6 +53,7 @@
 #include "duckdb/main/settings.hpp"
 #include "duckdb/main/rl_model_interface.hpp"
 #include "duckdb/main/rl_training_buffer.hpp"
+#include "duckdb/optimizer/rl_feature_collector.hpp"
 
 namespace duckdb {
 
@@ -156,6 +157,7 @@ ClientContext::ClientContext(shared_ptr<DatabaseInstance> database)
 	LoggingContext context(LogContextScope::CONNECTION);
 	logger = db->GetLogManager().CreateLogger(context, true);
 	client_data = make_uniq<ClientData>(*this);
+	rl_model = make_uniq<RLModelInterface>(*this);
 }
 
 ClientContext::~ClientContext() {
@@ -294,6 +296,13 @@ void ClientContext::CleanupInternal(ClientContextLock &lock, BaseQueryResult *re
 	}
 	active_query->progress_bar.reset();
 
+	// CRITICAL: Clear the feature collector to prevent memory leaks
+	// This MUST be in CleanupInternal (not FetchResultInternal) because:
+	// 1. FetchResultInternal is only called on successful queries
+	// 2. Failed queries skip FetchResultInternal, causing unbounded memory growth
+	// The RLFeatureCollector is a singleton that accumulates features during query optimization.
+	RLFeatureCollector::Get().Clear();
+
 	// Relaunch the threads if a SET THREADS command was issued
 	auto &scheduler = TaskScheduler::GetScheduler(*this);
 	scheduler.RelaunchThreads();
@@ -347,8 +356,9 @@ unique_ptr<QueryResult> ClientContext::FetchResultInternal(ClientContextLock &lo
 	if (physical_plan && profiler) {
 		try {
 			auto &training_buffer = db->GetRLTrainingBuffer();
-			RLModelInterface rl_interface(*this);
-			rl_interface.CollectActualCardinalities(*physical_plan, *profiler, training_buffer);
+			if (rl_model) {
+				rl_model->CollectActualCardinalities(*physical_plan, *profiler, training_buffer);
+			}
 		} catch (...) {
 			// Silently ignore errors in RL training collection
 		}

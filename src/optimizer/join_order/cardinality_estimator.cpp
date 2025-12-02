@@ -6,6 +6,8 @@
 #include "duckdb/optimizer/join_order/join_node.hpp"
 #include "duckdb/optimizer/join_order/query_graph_manager.hpp"
 #include "duckdb/optimizer/rl_feature_collector.hpp"
+#include "duckdb/main/rl_boosting_model.hpp"
+#include "duckdb/common/helper.hpp"
 #include "duckdb/planner/expression_iterator.hpp"
 #include "duckdb/planner/operator/logical_comparison_join.hpp"
 #include "duckdb/storage/data_table.hpp"
@@ -463,6 +465,8 @@ double CardinalityEstimator::EstimateCardinalityWithSet(JoinRelationSet &new_set
 		rl_join_features.denominator = denom.denominator;
 		rl_join_features.estimated_cardinality = result;
 		RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(new_set.ToString(), rl_join_features);
+		// BUG FIX: Re-fetch the pointer after adding, so existing_features is not null
+		existing_features = RLFeatureCollector::Get().GetJoinFeaturesByRelationSet(new_set.ToString());
 	} else {
 		// Update existing features with final values
 		existing_features->numerator = numerator;
@@ -470,6 +474,21 @@ double CardinalityEstimator::EstimateCardinalityWithSet(JoinRelationSet &new_set
 		existing_features->estimated_cardinality = result;
 		// Now also store by estimated cardinality for easy lookup later
 		RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(new_set.ToString(), *existing_features);
+	}
+
+	// INTEGRATION: Use RL Model for prediction if conditions are met
+	if (new_set.count >= 4 && rl_predictions_used < MAX_RL_PREDICTIONS_PER_QUERY) {
+		// Pass the JoinFeatures object, not the string
+		double rl_prediction = RLFeatureCollector::Get().PredictCardinality(*existing_features);
+		if (rl_prediction > 0) {
+			// DISABLED: Too expensive - called for every RL prediction
+			// Printer::Print("[RL DIAGNOSTIC] Used RL prediction for " + new_set.ToString() + ": " + to_string(rl_prediction) + " (Original: " + to_string(result) + ")");
+			result = rl_prediction;
+			rl_predictions_used++;
+		}
+	} else if (rl_predictions_used >= MAX_RL_PREDICTIONS_PER_QUERY && !rl_prediction_cap_logged) {
+		// Printer::Print("[RL DIAGNOSTIC] Prediction cap reached for this query.");
+		rl_prediction_cap_logged = true;
 	}
 
 	auto new_entry = CardinalityHelper(result);
@@ -513,6 +532,12 @@ void CardinalityEstimator::InitCardinalityEstimatorProps(optional_ptr<JoinRelati
 	// sort relations from greatest tdom to lowest tdom.
 	std::sort(relations_to_tdoms.begin(), relations_to_tdoms.end(), SortTdoms);
 }
+
+void CardinalityEstimator::ResetQueryPredictionCap() {
+	rl_predictions_used = 0;
+	rl_prediction_cap_logged = false;
+}
+
 
 void CardinalityEstimator::UpdateTotalDomains(optional_ptr<JoinRelationSet> set, RelationStats &stats) {
 	D_ASSERT(set->count == 1);

@@ -451,6 +451,7 @@ void PlanEnumerator::InitLeafPlans() {
 	// first initialize equivalent relations based on the filters
 	auto relation_stats = query_graph_manager.relation_manager.GetRelationStats();
 
+	cost_model.cardinality_estimator.ResetQueryPredictionCap();
 	cost_model.cardinality_estimator.InitEquivalentRelations(query_graph_manager.GetFilterBindings());
 	cost_model.cardinality_estimator.AddRelationNamesToTdoms(relation_stats);
 

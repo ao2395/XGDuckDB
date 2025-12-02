@@ -12,9 +12,11 @@
 #include "duckdb/common/vector.hpp"
 #include "duckdb/common/mutex.hpp"
 #include "duckdb/main/rl_training_buffer.hpp"
-#include "xgboost/c_api.h"
 
 namespace duckdb {
+
+typedef void *DMatrixHandle;
+typedef void *BoosterHandle;
 
 //! Gradient Boosted Trees model for online reinforcement learning cardinality estimation
 //! Uses XGBoost library for efficient gradient boosting
@@ -35,10 +37,11 @@ private:
 
 public:
 	//! Perform inference: takes feature vector and returns estimated cardinality
-	//! Input: 64-dimensional feature vector
+	//! Input: 70-dimensional feature vector (expanded with selectivity features)
 	//! Output: predicted cardinality (NOT log - we convert internally)
 	//! Thread-safe for concurrent reads
 	double Predict(const vector<double> &features);
+	void PredictBatch(const vector<vector<double>> &feature_matrix, vector<double> &output);
 
 	//! Train incrementally: adds trees based on recent samples from sliding window
 	//! Uses synchronous training after each query
@@ -79,16 +82,18 @@ private:
 	idx_t num_trees;
 	idx_t total_updates;
 
+public:
 	// Hyperparameters - chosen for online learning cardinality estimation
-	static constexpr int MAX_DEPTH = 5;                // Moderate complexity
+	static constexpr int MAX_DEPTH = 4;                // Moderate complexity
 	static constexpr float LEARNING_RATE = 0.3f;       // Higher for online setting
-	static constexpr int TREES_PER_UPDATE = 1;         // Add 1 tree per operator update
+	static constexpr int TREES_PER_UPDATE = 2;         // Add 2 trees per training update
 	static constexpr float SUBSAMPLE = 0.8f;           // Row sampling for regularization
 	static constexpr float COLSAMPLE_BYTREE = 0.8f;    // Feature sampling
 	static constexpr int MIN_CHILD_WEIGHT = 5;         // Regularization
-	static constexpr int FEATURE_VECTOR_SIZE = 64;     // Must match RLModelInterface
-	static constexpr idx_t MAX_TOTAL_TREES = 10000;    // Prevent runaway ensemble growth
+	static constexpr int FEATURE_VECTOR_SIZE = 70;     // Must match RLModelInterface
+	static constexpr idx_t MAX_TOTAL_TREES = 2000;    // Prevent runaway ensemble growth
 
+private:
 	// Sliding window size for training
 	static constexpr idx_t DEFAULT_WINDOW_SIZE = 200;
 };

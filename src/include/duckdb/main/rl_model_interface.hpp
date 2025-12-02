@@ -88,7 +88,7 @@ public:
 
 	//! Convert features to numerical vector for ML model input
 	//! Returns a fixed-size vector of doubles suitable for feeding to an ML model
-	vector<double> FeaturesToVector(const OperatorFeatures &features);
+	static vector<double> FeaturesToVector(const OperatorFeatures &features);
 
 	//! Train the model with actual cardinality (to be implemented later)
 	void TrainModel(const OperatorFeatures &features, idx_t actual_cardinality);
@@ -108,13 +108,13 @@ private:
 
 	// Feature vector size:
 	// - Operator type (10 one-hot)
-	// - Table scan features (8)
-	// - Join features (21)
+	// - Table scan features (24)
+	// - Join features (27) - expanded with 6 selectivity features
 	// - Aggregate features (4)
 	// - Filter features (2)
-	// - Context features (1)
-	// Total: 46, rounded to 64 for future expansion
-	static constexpr idx_t FEATURE_VECTOR_SIZE = 64;
+	// - Context features (3)
+	// Total: 70
+	static constexpr idx_t FEATURE_VECTOR_SIZE = 70;
 };
 
 } // namespace duckdb
