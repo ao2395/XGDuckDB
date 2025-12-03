@@ -18,26 +18,34 @@ RLFeatureCollector &RLFeatureCollector::Get() {
 
 void RLFeatureCollector::AddTableScanFeatures(const LogicalOperator *op, const TableScanFeatures &features) {
 	std::lock_guard<std::mutex> guard(lock);
+	// Safety limit to prevent memory explosion
+	if (table_scan_features.size() > 500) {
+		table_scan_features.clear();
+	}
 	table_scan_features[op] = features;
 }
 
 void RLFeatureCollector::AddJoinFeatures(const LogicalOperator *op, const JoinFeatures &features) {
 	std::lock_guard<std::mutex> guard(lock);
+	// Safety limit to prevent memory explosion
+	if (join_features.size() > 500) {
+		join_features.clear();
+	}
 	join_features[op] = features;
 }
 
 void RLFeatureCollector::AddJoinFeaturesByRelationSet(const string &relation_set, const JoinFeatures &features) {
 	std::lock_guard<std::mutex> guard(lock);
 	
-	// Prevent unbounded growth: if map gets too large, clear it
-	// This is a simple eviction strategy to prevent memory explosion
-	if (join_features_by_relation_set.size() > 5000) {
+	// STRICT memory limit: clear at 500 entries (not 5000!)
+	// Each JoinFeatures contains multiple strings = ~200+ bytes
+	// 500 * 200 bytes = ~100KB max per map
+	if (join_features_by_relation_set.size() > 500) {
 		join_features_by_relation_set.clear();
 		join_features_by_estimate.clear();
 	}
 	
 	join_features_by_relation_set[relation_set] = features;
-	// Also store by estimated cardinality for lookup
 	if (features.estimated_cardinality > 0) {
 		join_features_by_estimate[(idx_t)features.estimated_cardinality] = features;
 	}
@@ -45,6 +53,10 @@ void RLFeatureCollector::AddJoinFeaturesByRelationSet(const string &relation_set
 
 void RLFeatureCollector::AddFilterFeatures(const LogicalOperator *op, const FilterFeatures &features) {
 	std::lock_guard<std::mutex> guard(lock);
+	// Safety limit to prevent memory explosion
+	if (filter_features.size() > 500) {
+		filter_features.clear();
+	}
 	filter_features[op] = features;
 }
 
@@ -67,21 +79,13 @@ optional_ptr<JoinFeatures> RLFeatureCollector::GetJoinFeatures(const LogicalOper
 }
 
 optional_ptr<JoinFeatures> RLFeatureCollector::GetJoinFeaturesByRelationSet(const string &relation_set) {
-	// OPTIMIZATION: Try lock-free read first using thread-local cache
-	thread_local std::unordered_map<string, JoinFeatures> local_cache;
-	auto local_it = local_cache.find(relation_set);
-	if (local_it != local_cache.end()) {
-		return &local_it->second;
-	}
-	
-	// Fall back to locked read
+	// REMOVED thread-local cache: it was causing MASSIVE memory leaks
+	// Each worker thread had its own unbounded cache that never got cleared
+	// With 100+ HPC threads, this exploded memory usage to 200GB+
 	std::lock_guard<std::mutex> guard(lock);
 	auto it = join_features_by_relation_set.find(relation_set);
 	if (it != join_features_by_relation_set.end()) {
-		// Cache locally for future reads
-		if (local_cache.size() > 1000) local_cache.clear();
-		local_cache[relation_set] = it->second;
-		return &local_cache[relation_set];
+		return &it->second;
 	}
 	return nullptr;
 }
@@ -127,18 +131,15 @@ void RLFeatureCollector::RegisterPredictor(PredictorCallback callback) {
 }
 
 double RLFeatureCollector::PredictCardinality(const JoinFeatures &features) {
-	// OPTIMIZATION: Cache predictor in thread-local to avoid lock on every call
-	thread_local PredictorCallback cached_predictor = nullptr;
-	thread_local bool predictor_cached = false;
-	
-	if (!predictor_cached) {
+	// Get predictor under lock (fast - just a function pointer copy)
+	PredictorCallback local_predictor;
+	{
 		std::lock_guard<std::mutex> guard(lock);
-		cached_predictor = predictor;
-		predictor_cached = true;
+		local_predictor = predictor;
 	}
 
-	if (cached_predictor) {
-		return cached_predictor(features);
+	if (local_predictor) {
+		return local_predictor(features);
 	}
 	return 0.0;
 }

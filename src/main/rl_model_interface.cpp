@@ -44,19 +44,13 @@ RLModelInterface::RLModelInterface(ClientContext &context) : context(context), e
 			return 0.0;
 		}
 
-		// CACHING: Use THREAD-LOCAL cache to avoid lock contention on HPC
-		// Each thread has its own cache - NO MUTEX NEEDED for cache lookups!
-		thread_local std::unordered_map<std::string, double> prediction_cache;
-		
-		std::string cache_key = features.join_relation_set;
-		auto it = prediction_cache.find(cache_key);
-		if (it != prediction_cache.end()) {
-			return it->second;  // Cache hit - NO LOCK!
-		}
+		// NO CACHING: Thread-local caches caused MASSIVE memory leaks on HPC
+		// With 100+ threads and 5000 entries per thread = 500,000+ cached entries
+		// The XGBoost prediction is fast enough without caching
 
 		// Convert JoinFeatures to OperatorFeatures for the model
 		OperatorFeatures op_features;
-		op_features.operator_type = "LOGICAL_COMPARISON_JOIN"; // Assume join for optimizer predictions
+		op_features.operator_type = "LOGICAL_COMPARISON_JOIN";
 		op_features.join_type = features.join_type;
 		op_features.join_relation_set = features.join_relation_set;
 		op_features.num_relations = features.num_relations;
@@ -70,17 +64,13 @@ RLModelInterface::RLModelInterface(ClientContext &context) : context(context), e
 		op_features.extra_ratio = features.extra_ratio;
 		op_features.numerator = features.numerator;
 		op_features.denominator = features.denominator;
-		op_features.estimated_cardinality = features.estimated_cardinality; // DuckDB's estimate as context
+		op_features.estimated_cardinality = features.estimated_cardinality;
 		
-		// FIX: left_relation_card and right_relation_card can be UINT64_MAX (invalid) for complex joins
-		// Use numerator/denominator to derive reasonable estimates instead
+		// Handle invalid cardinalities
 		if (features.left_relation_card == std::numeric_limits<idx_t>::max() || 
 		    features.left_relation_card == 0 ||
 		    features.right_relation_card == std::numeric_limits<idx_t>::max() ||
 		    features.right_relation_card == 0) {
-			// Derive from numerator (which is product of all input cardinalities)
-			// For a join, numerator ≈ left_card * right_card
-			// Use sqrt as a rough estimate to split it
 			if (features.numerator > 0) {
 				double sqrt_num = std::sqrt(features.numerator);
 				op_features.left_cardinality = static_cast<idx_t>(sqrt_num);
@@ -90,34 +80,13 @@ RLModelInterface::RLModelInterface(ClientContext &context) : context(context), e
 				op_features.right_cardinality = 1;
 			}
 		} else {
-			// Use the provided values
 			op_features.left_cardinality = features.left_relation_card;
 			op_features.right_cardinality = features.right_relation_card;
 		}
 
-		// Convert to feature vector
+		// Convert to feature vector and predict
 		auto feature_vec = RLModelInterface::FeaturesToVector(op_features);
-
-		// DEBUG: Log feature values to diagnose why predictions are identical
-		// DISABLED: Too expensive - called for every prediction
-		// Printer::Print("[RL FEATURE DEBUG] " + cache_key + 
-		//                ": left_card=" + std::to_string(op_features.left_cardinality) +
-		//                ", right_card=" + std::to_string(op_features.right_cardinality) +
-		//                ", tdom=" + std::to_string(op_features.tdom_value) +
-		//                ", num=" + std::to_string(op_features.numerator) +
-		//                ", denom=" + std::to_string(op_features.denominator) + "\n");
-
-		// Predict
-		double prediction = RLBoostingModel::Get().Predict(feature_vec);
-
-		// Cache the result - thread_local so no lock needed!
-		// Large cache for better hit rate
-		if (prediction_cache.size() > 5000) {
-			prediction_cache.clear();  // Prevent unbounded growth
-		}
-		prediction_cache[cache_key] = prediction;
-
-		return prediction;
+		return RLBoostingModel::Get().Predict(feature_vec);
 	});
 }
 
