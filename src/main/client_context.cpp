@@ -300,6 +300,13 @@ void ClientContext::CleanupInternal(ClientContextLock &lock, BaseQueryResult *re
 	}
 	active_query->progress_bar.reset();
 
+	// CRITICAL: Clear the feature collector to prevent memory leaks
+	// This MUST be in CleanupInternal (not FetchResultInternal) because:
+	// 1. FetchResultInternal is only called on successful queries
+	// 2. Failed queries skip FetchResultInternal, causing unbounded memory growth
+	// The RLFeatureCollector is a singleton that accumulates features during query optimization.
+	RLFeatureCollector::Get().Clear();
+
 	// Relaunch the threads if a SET THREADS command was issued
 	auto &scheduler = TaskScheduler::GetScheduler(*this);
 	scheduler.RelaunchThreads();
