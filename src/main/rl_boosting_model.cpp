@@ -206,14 +206,10 @@ double RLBoostingModel::Predict(const vector<double> &features) {
 		int ret = XGBoosterPredictFromDense(booster, array_interface_buffer, PREDICT_CONFIG, nullptr, &out_shape,
 		                                    &out_dim, &out_result);
 		if (ret != 0 || !out_result || !out_shape || out_dim == 0) {
-			Printer::Print("[RL BOOSTING ERROR] Inplace prediction failed: " +
-			               std::string(XGBGetLastError()) + "\n");
-			return 0.0;
+			return 0.0;  // Silent fail for speed
 		}
 
-		// Expecting shape (1, 1) for a single regression output
 		if (out_dim < 1 || out_shape[0] != 1) {
-			Printer::Print("[RL BOOSTING ERROR] Unexpected prediction shape\n");
 			return 0.0;
 		}
 

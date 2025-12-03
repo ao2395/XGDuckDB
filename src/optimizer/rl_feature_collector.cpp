@@ -67,10 +67,21 @@ optional_ptr<JoinFeatures> RLFeatureCollector::GetJoinFeatures(const LogicalOper
 }
 
 optional_ptr<JoinFeatures> RLFeatureCollector::GetJoinFeaturesByRelationSet(const string &relation_set) {
+	// OPTIMIZATION: Try lock-free read first using thread-local cache
+	thread_local std::unordered_map<string, JoinFeatures> local_cache;
+	auto local_it = local_cache.find(relation_set);
+	if (local_it != local_cache.end()) {
+		return &local_it->second;
+	}
+	
+	// Fall back to locked read
 	std::lock_guard<std::mutex> guard(lock);
 	auto it = join_features_by_relation_set.find(relation_set);
 	if (it != join_features_by_relation_set.end()) {
-		return &it->second;
+		// Cache locally for future reads
+		if (local_cache.size() > 1000) local_cache.clear();
+		local_cache[relation_set] = it->second;
+		return &local_cache[relation_set];
 	}
 	return nullptr;
 }
@@ -116,17 +127,19 @@ void RLFeatureCollector::RegisterPredictor(PredictorCallback callback) {
 }
 
 double RLFeatureCollector::PredictCardinality(const JoinFeatures &features) {
-	PredictorCallback local_predictor;
-	{
+	// OPTIMIZATION: Cache predictor in thread-local to avoid lock on every call
+	thread_local PredictorCallback cached_predictor = nullptr;
+	thread_local bool predictor_cached = false;
+	
+	if (!predictor_cached) {
 		std::lock_guard<std::mutex> guard(lock);
-		local_predictor = predictor;
+		cached_predictor = predictor;
+		predictor_cached = true;
 	}
 
-	if (local_predictor) {
-		// Printer::Print("[RL DEBUG] Calling predictor for " + features.join_relation_set + "\n");
-		return local_predictor(features);
+	if (cached_predictor) {
+		return cached_predictor(features);
 	}
-	// Printer::Print("[RL DEBUG] No predictor registered!\n");
 	return 0.0;
 }
 

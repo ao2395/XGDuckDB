@@ -463,44 +463,34 @@ double CardinalityEstimator::EstimateCardinalityWithSet(JoinRelationSet &new_set
 
 	double result = numerator / denom.denominator;
 
-	// ALWAYS use RL predictions (returns 0 if not enough trees)
-	bool model_ready = true;
-	
-	if (model_ready) {
-		// Update the join features with final numerator, denominator, and estimated cardinality
-		// The detailed join features (TDOM, join type, etc.) were already collected in CalculateUpdatedDenom()
-		// Look up by relation set first (most reliable)
-		auto existing_features = RLFeatureCollector::Get().GetJoinFeaturesByRelationSet(new_set.ToString());
-		if (!existing_features) {
-			// If no detailed features exist yet, create a basic entry
-			JoinFeatures rl_join_features;
-			rl_join_features.join_relation_set = new_set.ToString();
-			rl_join_features.num_relations = new_set.count;
-			rl_join_features.numerator = numerator;
-			rl_join_features.denominator = denom.denominator;
-			rl_join_features.estimated_cardinality = result;
-			RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(new_set.ToString(), rl_join_features);
-			// BUG FIX: Re-fetch the pointer after adding, so existing_features is not null
-			existing_features = RLFeatureCollector::Get().GetJoinFeaturesByRelationSet(new_set.ToString());
-		} else {
-			// Update existing features with final values
+	// OPTIMIZED: Use RL for joins with 2+ tables, minimize lock acquisitions
+	if (new_set.count >= 2 && rl_predictions_used < MAX_RL_PREDICTIONS_PER_QUERY) {
+		// Build features locally - avoid repeated collector lookups
+		JoinFeatures rl_join_features;
+		rl_join_features.join_relation_set = new_set.ToString();
+		rl_join_features.num_relations = new_set.count;
+		rl_join_features.numerator = numerator;
+		rl_join_features.denominator = denom.denominator;
+		rl_join_features.estimated_cardinality = result;
+		
+		// Try to get existing features (one lock), or use our basic features
+		auto existing_features = RLFeatureCollector::Get().GetJoinFeaturesByRelationSet(rl_join_features.join_relation_set);
+		if (existing_features) {
+			// Use existing detailed features but update with current values
 			existing_features->numerator = numerator;
 			existing_features->denominator = denom.denominator;
 			existing_features->estimated_cardinality = result;
-			// Now also store by estimated cardinality for easy lookup later
-			RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(new_set.ToString(), *existing_features);
+			rl_join_features = *existing_features;
 		}
-
-		// INTEGRATION: Use RL Model for prediction if conditions are met
-		if (new_set.count >= 4 && rl_predictions_used < MAX_RL_PREDICTIONS_PER_QUERY) {
-			// Pass the JoinFeatures object, not the string
-			double rl_prediction = RLFeatureCollector::Get().PredictCardinality(*existing_features);
-			if (rl_prediction > 0) {
-				result = rl_prediction;
-				rl_predictions_used++;
-			}
-		} else if (rl_predictions_used >= MAX_RL_PREDICTIONS_PER_QUERY && !rl_prediction_cap_logged) {
-			rl_prediction_cap_logged = true;
+		
+		// Store for future use (one lock)
+		RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
+		
+		// Get prediction (cached predictor - usually no lock)
+		double rl_prediction = RLFeatureCollector::Get().PredictCardinality(rl_join_features);
+		if (rl_prediction > 0) {
+			result = rl_prediction;
+			rl_predictions_used++;
 		}
 	}
 
