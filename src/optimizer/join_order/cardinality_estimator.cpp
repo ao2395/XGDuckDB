@@ -220,29 +220,32 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
                                                    FilterInfoWithTotalDomains &filter) {
 	double new_denom = left.denom * right.denom;
 
-	// ALWAYS collect features for training
-	bool collect_rl_features = true;
-	
-	// Collect join features for RL model (only if model is ready)
-	JoinFeatures rl_join_features;
-	rl_join_features.join_type = EnumUtil::ToString(filter.filter_info->join_type);
-
-	// Get actual cardinalities (not just relation count)
-	// Note: GetNumerator multiplies all cardinalities in the set, which is correct for the numerator
-	// but for left/right cardinalities we want the product of all relations in each side
-	rl_join_features.left_relation_card = static_cast<idx_t>(GetNumerator(*left.relations));
-	rl_join_features.right_relation_card = static_cast<idx_t>(GetNumerator(*right.relations));
-	rl_join_features.left_denominator = left.denom;
-	rl_join_features.right_denominator = right.denom;
-
-	// Get the relation set for this join (use reference since JoinRelationSet can't be copied)
+	// Get the relation set for this join
 	auto &combined_relations = set_manager.Union(*left.relations, *right.relations);
-	rl_join_features.join_relation_set = combined_relations.ToString();
-	rl_join_features.num_relations = combined_relations.count;
 
-	// Store TDOM values
-	rl_join_features.tdom_from_hll = filter.has_tdom_hll;
-	rl_join_features.tdom_value = filter.has_tdom_hll ? filter.tdom_hll : filter.tdom_no_hll;
+	// SKIP RL feature collection for complex queries (>10 tables) to avoid memory explosion
+	// The join order optimizer explores O(2^N) combinations, which is manageable for small N
+	// but explodes for large N. For 15 tables: 9.7M combinations, 20 tables: 1M+ combinations
+	// Each creates JoinFeatures with string allocations = massive memory spike
+	bool collect_rl_features = (combined_relations.count <= 10) && 
+	                           (rl_features_collected < MAX_RL_FEATURES_PER_QUERY);
+
+	// Only build features if we're going to use them
+	JoinFeatures rl_join_features;
+	if (collect_rl_features) {
+		rl_join_features.join_type = EnumUtil::ToString(filter.filter_info->join_type);
+		rl_join_features.left_relation_card = static_cast<idx_t>(GetNumerator(*left.relations));
+		rl_join_features.right_relation_card = static_cast<idx_t>(GetNumerator(*right.relations));
+		rl_join_features.left_denominator = left.denom;
+		rl_join_features.right_denominator = right.denom;
+		rl_join_features.join_relation_set = combined_relations.ToString();
+		rl_join_features.num_relations = combined_relations.count;
+		rl_join_features.tdom_from_hll = filter.has_tdom_hll;
+		rl_join_features.tdom_value = filter.has_tdom_hll ? filter.tdom_hll : filter.tdom_no_hll;
+	}
+
+	// Store TDOM values for DuckDB's native estimation (always needed)
+	idx_t tdom_value = filter.has_tdom_hll ? filter.tdom_hll : filter.tdom_no_hll;
 
 	switch (filter.filter_info->join_type) {
 	case JoinType::INNER: {
@@ -254,15 +257,10 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
 			}
 		});
 
-		// Store comparison type
-		rl_join_features.comparison_type = ExpressionTypeToString(comparison_type);
-
 		if (comparison_type == ExpressionType::INVALID) {
-			new_denom *=
-			    filter.has_tdom_hll ? static_cast<double>(filter.tdom_hll) : static_cast<double>(filter.tdom_no_hll);
-			// no comparison is taking place, so the denominator is just the product of the left and right
-			// Save the join features before returning (only if model is ready)
+			new_denom *= static_cast<double>(tdom_value);
 			if (collect_rl_features) {
+				rl_features_collected++;
 				RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
 			}
 			return new_denom;
@@ -274,9 +272,7 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM:
-			// extra ratio stays 1
-			extra_ratio =
-			    filter.has_tdom_hll ? static_cast<double>(filter.tdom_hll) : static_cast<double>(filter.tdom_no_hll);
+			extra_ratio = static_cast<double>(tdom_value);
 			break;
 		case ExpressionType::COMPARE_LESSTHANOREQUALTO:
 		case ExpressionType::COMPARE_LESSTHAN:
@@ -284,19 +280,17 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
 		case ExpressionType::COMPARE_GREATERTHAN:
 		case ExpressionType::COMPARE_NOTEQUAL:
 		case ExpressionType::COMPARE_DISTINCT_FROM:
-			// Assume this blows up, but use the tdom to bound it a bit
-			extra_ratio =
-			    filter.has_tdom_hll ? static_cast<double>(filter.tdom_hll) : static_cast<double>(filter.tdom_no_hll);
-			extra_ratio = pow(extra_ratio, 2.0 / 3.0);
+			extra_ratio = pow(static_cast<double>(tdom_value), 2.0 / 3.0);
 			break;
 		default:
 			break;
 		}
-		rl_join_features.extra_ratio = extra_ratio;
 		new_denom *= extra_ratio;
 
-		// Save the join features (only if model is ready)
 		if (collect_rl_features) {
+			rl_join_features.comparison_type = ExpressionTypeToString(comparison_type);
+			rl_join_features.extra_ratio = extra_ratio;
+			rl_features_collected++;
 			RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
 		}
 		return new_denom;
@@ -309,15 +303,16 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
 		} else {
 			new_denom = right.denom * CardinalityEstimator::DEFAULT_SEMI_ANTI_SELECTIVITY;
 		}
-		// Save the join features (only if model is ready)
 		if (collect_rl_features) {
+			rl_features_collected++;
 			RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
 		}
 		return new_denom;
 	}
 	default:
-		// cross product - Save the join features (only if model is ready)
+		// cross product
 		if (collect_rl_features) {
+			rl_features_collected++;
 			RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
 		}
 		return new_denom;
@@ -463,9 +458,16 @@ double CardinalityEstimator::EstimateCardinalityWithSet(JoinRelationSet &new_set
 
 	double result = numerator / denom.denominator;
 
-	// OPTIMIZED: Use RL for joins with 2+ tables, minimize lock acquisitions
-	if (new_set.count >= 2 && rl_predictions_used < MAX_RL_PREDICTIONS_PER_QUERY) {
-		// Build features locally - avoid repeated collector lookups
+	// Use RL predictions for manageable queries only
+	// Skip for: queries with too many tables (>10), or already hit caps
+	// This prevents memory explosion during join order optimization for complex queries
+	bool use_rl = (new_set.count >= 2) && 
+	              (new_set.count <= 10) &&
+	              (rl_predictions_used < MAX_RL_PREDICTIONS_PER_QUERY) &&
+	              (rl_features_collected < MAX_RL_FEATURES_PER_QUERY);
+
+	if (use_rl) {
+		// Build features locally
 		JoinFeatures rl_join_features;
 		rl_join_features.join_relation_set = new_set.ToString();
 		rl_join_features.num_relations = new_set.count;
@@ -476,17 +478,17 @@ double CardinalityEstimator::EstimateCardinalityWithSet(JoinRelationSet &new_set
 		// Try to get existing features (one lock), or use our basic features
 		auto existing_features = RLFeatureCollector::Get().GetJoinFeaturesByRelationSet(rl_join_features.join_relation_set);
 		if (existing_features) {
-			// Use existing detailed features but update with current values
 			existing_features->numerator = numerator;
 			existing_features->denominator = denom.denominator;
 			existing_features->estimated_cardinality = result;
 			rl_join_features = *existing_features;
 		}
 		
-		// Store for future use (one lock)
+		// Store for future use
+		rl_features_collected++;
 		RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
 		
-		// Get prediction (cached predictor - usually no lock)
+		// Get prediction
 		double rl_prediction = RLFeatureCollector::Get().PredictCardinality(rl_join_features);
 		if (rl_prediction > 0) {
 			result = rl_prediction;
@@ -538,6 +540,7 @@ void CardinalityEstimator::InitCardinalityEstimatorProps(optional_ptr<JoinRelati
 
 void CardinalityEstimator::ResetQueryPredictionCap() {
 	rl_predictions_used = 0;
+	rl_features_collected = 0;
 	rl_prediction_cap_logged = false;
 }
 
