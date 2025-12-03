@@ -91,7 +91,7 @@ public:
 	static constexpr float COLSAMPLE_BYTREE = 0.8f;    // Feature sampling
 	static constexpr int MIN_CHILD_WEIGHT = 5;         // Regularization
 	static constexpr int FEATURE_VECTOR_SIZE = 70;     // Must match RLModelInterface
-	static constexpr idx_t MAX_TOTAL_TREES = 2000;    // Prevent runaway ensemble growth
+	static constexpr idx_t MAX_TOTAL_TREES = 200;      // Limited to reduce memory usage
 
 private:
 	// Sliding window size for training

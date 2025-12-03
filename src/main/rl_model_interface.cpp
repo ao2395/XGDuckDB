@@ -687,14 +687,18 @@ void RLModelInterface::AttachRLState(PhysicalOperator &physical_op, const Operat
 		return;
 	}
 
+	// MEMORY OPTIMIZATION: Only attach RL state to JOIN operators
+	// This significantly reduces memory usage since we only care about join cardinalities
+	// for training. Other operators (scans, filters, aggregates) don't need tracking.
+	if (features.join_type.empty()) {
+		return;  // Not a join - skip attaching state
+	}
+
 	// Convert features to vector
 	auto feature_vec = FeaturesToVector(features);
 
 	// Create and attach RL state
 	physical_op.rl_state = make_uniq<RLOperatorState>(std::move(feature_vec), rl_prediction, duckdb_estimate);
-
-	// Printer::Print("[RL MODEL] Attached RL state to operator: RL=" + std::to_string(rl_prediction) + ", DuckDB=" +
-	//                std::to_string(duckdb_estimate) + "\n");
 }
 
 void RLModelInterface::CollectActualCardinalities(PhysicalOperator &root_operator,

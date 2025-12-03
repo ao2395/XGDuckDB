@@ -220,8 +220,8 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
                                                    FilterInfoWithTotalDomains &filter) {
 	double new_denom = left.denom * right.denom;
 
-	// PERFORMANCE: Skip RL feature collection if model isn't ready yet
-	// This eliminates lock contention on HPC during the initial training phase
+	// PERFORMANCE: Skip RL feature collection until model has enough trees
+	// This eliminates lock contention on HPC during initial training
 	bool collect_rl_features = RLBoostingModel::Get().GetNumTrees() >= 50;
 	
 	// Collect join features for RL model (only if model is ready)
