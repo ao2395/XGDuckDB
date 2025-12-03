@@ -5,12 +5,13 @@
 #include "duckdb/function/table/table_scan.hpp"
 #include "duckdb/optimizer/join_order/join_node.hpp"
 #include "duckdb/optimizer/join_order/query_graph_manager.hpp"
-#include "duckdb/optimizer/rl_feature_collector.hpp"
-#include "duckdb/main/rl_boosting_model.hpp"
 #include "duckdb/common/helper.hpp"
 #include "duckdb/planner/expression_iterator.hpp"
 #include "duckdb/planner/operator/logical_comparison_join.hpp"
 #include "duckdb/storage/data_table.hpp"
+// NOTE: RL predictions are NOT done during join order optimization
+// They happen during physical plan creation (see plan_comparison_join.cpp etc.)
+// This is how production learned optimizers work (Bao, Neo)
 
 #include <math.h>
 
@@ -223,33 +224,17 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
 	// Get the relation set for this join
 	auto &combined_relations = set_manager.Union(*left.relations, *right.relations);
 
-	// SKIP RL feature collection for complex queries (>10 tables) to avoid memory explosion
-	// The join order optimizer explores O(2^N) combinations, which is manageable for small N
-	// but explodes for large N. For 15 tables: 9.7M combinations, 20 tables: 1M+ combinations
-	// Each creates JoinFeatures with string allocations = massive memory spike
-	bool collect_rl_features = (combined_relations.count <= 10) && 
-	                           (rl_features_collected < MAX_RL_FEATURES_PER_QUERY);
+	// NO RL FEATURE COLLECTION IN CalculateUpdatedDenom
+	// This function is called O(edges × combinations) times during join order optimization
+	// For queries with many tables, that's potentially millions of calls
+	// Learned optimizers (Bao, Neo, etc.) don't predict during plan enumeration - they predict AFTER
+	// RL features are collected ONLY during physical plan creation (after join order is chosen)
 
-	// Only build features if we're going to use them
-	JoinFeatures rl_join_features;
-	if (collect_rl_features) {
-		rl_join_features.join_type = EnumUtil::ToString(filter.filter_info->join_type);
-		rl_join_features.left_relation_card = static_cast<idx_t>(GetNumerator(*left.relations));
-		rl_join_features.right_relation_card = static_cast<idx_t>(GetNumerator(*right.relations));
-		rl_join_features.left_denominator = left.denom;
-		rl_join_features.right_denominator = right.denom;
-		rl_join_features.join_relation_set = combined_relations.ToString();
-		rl_join_features.num_relations = combined_relations.count;
-		rl_join_features.tdom_from_hll = filter.has_tdom_hll;
-		rl_join_features.tdom_value = filter.has_tdom_hll ? filter.tdom_hll : filter.tdom_no_hll;
-	}
-
-	// Store TDOM values for DuckDB's native estimation (always needed)
+	// Store TDOM values for DuckDB's native estimation
 	idx_t tdom_value = filter.has_tdom_hll ? filter.tdom_hll : filter.tdom_no_hll;
 
 	switch (filter.filter_info->join_type) {
 	case JoinType::INNER: {
-		// Collect comparison types
 		ExpressionType comparison_type = ExpressionType::INVALID;
 		ExpressionIterator::EnumerateExpression(filter.filter_info->filter, [&](Expression &expr) {
 			if (expr.GetExpressionClass() == ExpressionClass::BOUND_COMPARISON) {
@@ -259,15 +244,9 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
 
 		if (comparison_type == ExpressionType::INVALID) {
 			new_denom *= static_cast<double>(tdom_value);
-			if (collect_rl_features) {
-				rl_features_collected++;
-				RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
-			}
 			return new_denom;
 		}
 
-		// extra_ratio helps represents how many tuples will be filtered out if the comparison evaluates to
-		// false. set to 1 to assume cross product.
 		double extra_ratio = 1;
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
@@ -286,13 +265,6 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
 			break;
 		}
 		new_denom *= extra_ratio;
-
-		if (collect_rl_features) {
-			rl_join_features.comparison_type = ExpressionTypeToString(comparison_type);
-			rl_join_features.extra_ratio = extra_ratio;
-			rl_features_collected++;
-			RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
-		}
 		return new_denom;
 	}
 	case JoinType::SEMI:
@@ -303,18 +275,9 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
 		} else {
 			new_denom = right.denom * CardinalityEstimator::DEFAULT_SEMI_ANTI_SELECTIVITY;
 		}
-		if (collect_rl_features) {
-			rl_features_collected++;
-			RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
-		}
 		return new_denom;
 	}
 	default:
-		// cross product
-		if (collect_rl_features) {
-			rl_features_collected++;
-			RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
-		}
 		return new_denom;
 	}
 }
@@ -458,43 +421,13 @@ double CardinalityEstimator::EstimateCardinalityWithSet(JoinRelationSet &new_set
 
 	double result = numerator / denom.denominator;
 
-	// Use RL predictions for manageable queries only
-	// Skip for: queries with too many tables (>10), or already hit caps
-	// This prevents memory explosion during join order optimization for complex queries
-	bool use_rl = (new_set.count >= 2) && 
-	              (new_set.count <= 10) &&
-	              (rl_predictions_used < MAX_RL_PREDICTIONS_PER_QUERY) &&
-	              (rl_features_collected < MAX_RL_FEATURES_PER_QUERY);
-
-	if (use_rl) {
-		// Build features locally
-		JoinFeatures rl_join_features;
-		rl_join_features.join_relation_set = new_set.ToString();
-		rl_join_features.num_relations = new_set.count;
-		rl_join_features.numerator = numerator;
-		rl_join_features.denominator = denom.denominator;
-		rl_join_features.estimated_cardinality = result;
-		
-		// Try to get existing features (one lock), or use our basic features
-		auto existing_features = RLFeatureCollector::Get().GetJoinFeaturesByRelationSet(rl_join_features.join_relation_set);
-		if (existing_features) {
-			existing_features->numerator = numerator;
-			existing_features->denominator = denom.denominator;
-			existing_features->estimated_cardinality = result;
-			rl_join_features = *existing_features;
-		}
-		
-		// Store for future use
-		rl_features_collected++;
-		RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
-		
-		// Get prediction
-		double rl_prediction = RLFeatureCollector::Get().PredictCardinality(rl_join_features);
-		if (rl_prediction > 0) {
-			result = rl_prediction;
-			rl_predictions_used++;
-		}
-	}
+	// NO RL PREDICTIONS DURING JOIN ORDER OPTIMIZATION
+	// This function is called for EVERY candidate plan during DP enumeration (up to 10,000+ times)
+	// Any overhead here causes OOM for complex queries
+	// 
+	// RL predictions happen AFTER join order is chosen, during physical plan creation
+	// See: plan_comparison_join.cpp, plan_aggregate.cpp, etc.
+	// This is how production learned optimizers work (Bao, Neo, etc.)
 
 	auto new_entry = CardinalityHelper(result);
 	relation_set_2_cardinality[new_set.ToString()] = new_entry;
@@ -539,9 +472,7 @@ void CardinalityEstimator::InitCardinalityEstimatorProps(optional_ptr<JoinRelati
 }
 
 void CardinalityEstimator::ResetQueryPredictionCap() {
-	rl_predictions_used = 0;
-	rl_features_collected = 0;
-	rl_prediction_cap_logged = false;
+	// No-op: RL predictions are now done during physical plan creation, not join order optimization
 }
 
 

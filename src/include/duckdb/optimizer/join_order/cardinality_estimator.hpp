@@ -15,8 +15,6 @@
 namespace duckdb {
 
 class FilterInfo;
-struct JoinFeatures;
-class RLBoostingModel;
 
 struct DenomInfo {
 	DenomInfo(JoinRelationSet &numerator_relations, double filter_strength, double denominator)
@@ -90,11 +88,6 @@ public:
 class CardinalityEstimator {
 public:
 	static constexpr double DEFAULT_SEMI_ANTI_SELECTIVITY = 5;
-	static constexpr idx_t MAX_RL_PREDICTIONS_PER_QUERY = 200;
-	// Cap feature collection to prevent memory explosion during join order optimization
-	// For queries with many tables, the optimizer explores O(2^N) combinations
-	// Each feature collection allocates strings and objects
-	static constexpr idx_t MAX_RL_FEATURES_PER_QUERY = 1000;
 	explicit CardinalityEstimator() {};
 
 private:
@@ -102,9 +95,6 @@ private:
 	unordered_map<string, CardinalityHelper> relation_set_2_cardinality;
 	JoinRelationSetManager set_manager;
 	vector<RelationStats> relation_stats;
-	idx_t rl_predictions_used = 0;
-	idx_t rl_features_collected = 0;
-	bool rl_prediction_cap_logged = false;
 
 public:
 	void RemoveEmptyTotalDomains();
