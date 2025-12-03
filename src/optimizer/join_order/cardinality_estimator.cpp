@@ -220,8 +220,8 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
                                                    FilterInfoWithTotalDomains &filter) {
 	double new_denom = left.denom * right.denom;
 
-	// Start collecting features after just 10 trees for faster learning
-	bool collect_rl_features = RLBoostingModel::Get().GetNumTrees() >= 10;
+	// ALWAYS collect features for training
+	bool collect_rl_features = true;
 	
 	// Collect join features for RL model (only if model is ready)
 	JoinFeatures rl_join_features;
@@ -463,8 +463,8 @@ double CardinalityEstimator::EstimateCardinalityWithSet(JoinRelationSet &new_set
 
 	double result = numerator / denom.denominator;
 
-	// Start using RL predictions after just 10 trees for faster adaptation
-	bool model_ready = RLBoostingModel::Get().GetNumTrees() >= 10;
+	// ALWAYS use RL predictions (returns 0 if not enough trees)
+	bool model_ready = true;
 	
 	if (model_ready) {
 		// Update the join features with final numerator, denominator, and estimated cardinality

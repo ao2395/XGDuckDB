@@ -39,8 +39,8 @@ RLModelInterface::RLModelInterface(ClientContext &context) : context(context), e
 	// This allows the optimizer to request cardinality predictions for join sets
 	// NOTE: Don't capture 'this' - RLModelInterface is per-context but RLFeatureCollector is singleton
 	RLFeatureCollector::Get().RegisterPredictor([](const JoinFeatures &features) -> double {
-		// Start predictions after just 20 trees for faster adaptation
-		if (RLBoostingModel::Get().GetNumTrees() < 20) {
+		// ALWAYS use predictions - start after just 2 trees
+		if (RLBoostingModel::Get().GetNumTrees() < 2) {
 			return 0.0;
 		}
 
@@ -700,17 +700,15 @@ void RLModelInterface::CollectActualCardinalities(PhysicalOperator &root_operato
 	// Recursively traverse the physical operator tree
 	CollectActualCardinalitiesRecursive(*actual_root, profiler, buffer);
 
-	// AGGRESSIVE TRAINING: Train every 2 queries for fast learning
+	// Train EVERY query for fastest model building
 	static std::atomic<idx_t> query_counter{0};
 	idx_t current_count = ++query_counter;
 
-	// Train frequently with large sample batches for maximum learning speed
-	if (current_count % 2 == 0) {
-		auto recent_samples = buffer.GetRecentSamples(2000);
-		if (recent_samples.size() >= 50) {
-			auto &model = RLBoostingModel::Get();
-			model.UpdateIncremental(recent_samples);
-		}
+	// Train every query with moderate batch for fast learning
+	auto recent_samples = buffer.GetRecentSamples(500);
+	if (recent_samples.size() >= 10) {
+		auto &model = RLBoostingModel::Get();
+		model.UpdateIncremental(recent_samples);
 	}
 
 	// Printer::Print("[RL TRAINING] Finished collecting actual cardinalities\n");

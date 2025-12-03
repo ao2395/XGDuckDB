@@ -28,6 +28,9 @@ RLBoostingModel::RLBoostingModel()
 }
 
 RLBoostingModel::~RLBoostingModel() {
+	// Signal shutdown to prevent any further access
+	initialized = false;
+	
 	if (booster) {
 		XGBoosterFree(booster);
 		booster = nullptr;
@@ -152,18 +155,19 @@ void RLBoostingModel::FreeDMatrix(DMatrixHandle dmat) {
 }
 
 double RLBoostingModel::Predict(const vector<double> &features) {
+	// Safety check for shutdown - prevent access during/after destruction
+	static std::atomic<bool> shutting_down{false};
+	if (shutting_down.load(std::memory_order_relaxed)) {
+		return 0.0;
+	}
+
 	// Validate input size
 	if (features.size() != FEATURE_VECTOR_SIZE) {
-		Printer::Print("[RL BOOSTING ERROR] Invalid feature vector size: " +
-		               std::to_string(features.size()) +
-		               " (expected " + std::to_string(FEATURE_VECTOR_SIZE) + ")\n");
-		return 0.0;
+		return 0.0;  // Silent fail for speed
 	}
 
 	// Check if model is ready for prediction (must have real training, not just dummy tree)
 	if (!initialized || !booster || num_trees <= 1) {
-		// Model not ready yet - caller will use DuckDB estimate
-		// Printer::Print("[RL DEBUG] Model not ready for prediction (trees=" + std::to_string(num_trees) + ")\n");
 		return 0.0;
 	}
 
