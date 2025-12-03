@@ -75,7 +75,7 @@ DatabaseInstance::DatabaseInstance() : db_validity(*this) {
 	create_api_v1 = nullptr;
 
 	// Initialize RL training infrastructure
-	rl_training_buffer = make_uniq<RLTrainingBuffer>(2000);  // 2K sample capacity (reduced for memory)
+	rl_training_buffer = make_uniq<RLTrainingBuffer>(50000);  // 50K sample capacity for better learning
 	// Note: Background training thread disabled - using synchronous XGBoost training instead
 	rl_training_thread = nullptr;
 

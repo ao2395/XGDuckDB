@@ -39,24 +39,14 @@ RLModelInterface::RLModelInterface(ClientContext &context) : context(context), e
 	// This allows the optimizer to request cardinality predictions for join sets
 	// NOTE: Don't capture 'this' - RLModelInterface is per-context but RLFeatureCollector is singleton
 	RLFeatureCollector::Get().RegisterPredictor([](const JoinFeatures &features) -> double {
-		// SAFETY CHECK: Don't use model until it has trained at least a bit
-		// This prevents using random initial predictions that could lead to bad plans
-		if (RLBoostingModel::Get().GetNumTrees() < 100) {
+		// Start predictions after just 20 trees for faster adaptation
+		if (RLBoostingModel::Get().GetNumTrees() < 20) {
 			return 0.0;
 		}
 
 		// CACHING: Use THREAD-LOCAL cache to avoid lock contention on HPC
 		// Each thread has its own cache - NO MUTEX NEEDED for cache lookups!
 		thread_local std::unordered_map<std::string, double> prediction_cache;
-		thread_local idx_t cache_query_id = 0;
-		
-		// Clear cache periodically (every 100 queries per thread)
-		static std::atomic<idx_t> global_query_counter{0};
-		idx_t current_query = global_query_counter.load(std::memory_order_relaxed);
-		if (cache_query_id != current_query / 100) {
-			prediction_cache.clear();
-			cache_query_id = current_query / 100;
-		}
 		
 		std::string cache_key = features.join_relation_set;
 		auto it = prediction_cache.find(cache_key);
@@ -121,13 +111,11 @@ RLModelInterface::RLModelInterface(ClientContext &context) : context(context), e
 		double prediction = RLBoostingModel::Get().Predict(feature_vec);
 
 		// Cache the result - thread_local so no lock needed!
-		if (prediction_cache.size() > 1000) {
+		// Large cache for better hit rate
+		if (prediction_cache.size() > 5000) {
 			prediction_cache.clear();  // Prevent unbounded growth
 		}
 		prediction_cache[cache_key] = prediction;
-		
-		// Increment global counter for cache invalidation
-		global_query_counter.fetch_add(1, std::memory_order_relaxed);
 
 		return prediction;
 	});
@@ -687,17 +675,8 @@ void RLModelInterface::AttachRLState(PhysicalOperator &physical_op, const Operat
 		return;
 	}
 
-	// MEMORY OPTIMIZATION: Only attach RL state to JOIN operators
-	// This significantly reduces memory usage since we only care about join cardinalities
-	// for training. Other operators (scans, filters, aggregates) don't need tracking.
-	if (features.join_type.empty()) {
-		return;  // Not a join - skip attaching state
-	}
-
-	// Convert features to vector
+	// Convert features to vector and attach RL state for training
 	auto feature_vec = FeaturesToVector(features);
-
-	// Create and attach RL state
 	physical_op.rl_state = make_uniq<RLOperatorState>(std::move(feature_vec), rl_prediction, duckdb_estimate);
 }
 
@@ -721,18 +700,16 @@ void RLModelInterface::CollectActualCardinalities(PhysicalOperator &root_operato
 	// Recursively traverse the physical operator tree
 	CollectActualCardinalitiesRecursive(*actual_root, profiler, buffer);
 
-	// SYNCHRONOUS TRAINING: Train every 5 queries with 2 trees per update
-	// This balances learning speed with memory usage
-	// Reaches 10 trees (safety threshold) after ~25 queries
+	// AGGRESSIVE TRAINING: Train every 2 queries for fast learning
 	static std::atomic<idx_t> query_counter{0};
 	idx_t current_count = ++query_counter;
 
-	if (current_count % 5 == 0) {
-		auto recent_samples = buffer.GetRecentSamples(400);
-		if (recent_samples.size() >= 20) {
+	// Train frequently with large sample batches for maximum learning speed
+	if (current_count % 2 == 0) {
+		auto recent_samples = buffer.GetRecentSamples(2000);
+		if (recent_samples.size() >= 50) {
 			auto &model = RLBoostingModel::Get();
 			model.UpdateIncremental(recent_samples);
-			// Printer::Print("[RL TRAINING] Updated model. Trees: " + std::to_string(model.GetNumTrees()) + "\n");
 		}
 	}
 
