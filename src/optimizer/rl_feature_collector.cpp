@@ -18,29 +18,20 @@ RLFeatureCollector &RLFeatureCollector::Get() {
 
 void RLFeatureCollector::AddTableScanFeatures(const LogicalOperator *op, const TableScanFeatures &features) {
 	std::lock_guard<std::mutex> guard(lock);
-	// Safety limit to prevent memory explosion
-	if (table_scan_features.size() > 500) {
-		table_scan_features.clear();
-	}
 	table_scan_features[op] = features;
 }
 
 void RLFeatureCollector::AddJoinFeatures(const LogicalOperator *op, const JoinFeatures &features) {
 	std::lock_guard<std::mutex> guard(lock);
-	// Safety limit to prevent memory explosion
-	if (join_features.size() > 500) {
-		join_features.clear();
-	}
 	join_features[op] = features;
 }
 
 void RLFeatureCollector::AddJoinFeaturesByRelationSet(const string &relation_set, const JoinFeatures &features) {
 	std::lock_guard<std::mutex> guard(lock);
 	
-	// STRICT memory limit: clear at 500 entries (not 5000!)
-	// Each JoinFeatures contains multiple strings = ~200+ bytes
-	// 500 * 200 bytes = ~100KB max per map
-	if (join_features_by_relation_set.size() > 500) {
+	// Safety limit - but high enough for good cache hit rates
+	// These get cleared after each query anyway by Clear()
+	if (join_features_by_relation_set.size() > 10000) {
 		join_features_by_relation_set.clear();
 		join_features_by_estimate.clear();
 	}
@@ -53,10 +44,6 @@ void RLFeatureCollector::AddJoinFeaturesByRelationSet(const string &relation_set
 
 void RLFeatureCollector::AddFilterFeatures(const LogicalOperator *op, const FilterFeatures &features) {
 	std::lock_guard<std::mutex> guard(lock);
-	// Safety limit to prevent memory explosion
-	if (filter_features.size() > 500) {
-		filter_features.clear();
-	}
 	filter_features[op] = features;
 }
 
@@ -79,9 +66,8 @@ optional_ptr<JoinFeatures> RLFeatureCollector::GetJoinFeatures(const LogicalOper
 }
 
 optional_ptr<JoinFeatures> RLFeatureCollector::GetJoinFeaturesByRelationSet(const string &relation_set) {
-	// REMOVED thread-local cache: it was causing MASSIVE memory leaks
-	// Each worker thread had its own unbounded cache that never got cleared
-	// With 100+ HPC threads, this exploded memory usage to 200GB+
+	// NOTE: Thread-local cache was removed - it caused memory leaks because
+	// thread_local variables persist across queries and never get cleared by Clear()
 	std::lock_guard<std::mutex> guard(lock);
 	auto it = join_features_by_relation_set.find(relation_set);
 	if (it != join_features_by_relation_set.end()) {
