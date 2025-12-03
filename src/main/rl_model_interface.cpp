@@ -28,6 +28,7 @@
 #include <unordered_map>
 #include <mutex>
 #include <cstring>
+#include <atomic>
 
 namespace duckdb {
 
@@ -40,24 +41,27 @@ RLModelInterface::RLModelInterface(ClientContext &context) : context(context), e
 	RLFeatureCollector::Get().RegisterPredictor([](const JoinFeatures &features) -> double {
 		// SAFETY CHECK: Don't use model until it has trained at least a bit
 		// This prevents using random initial predictions that could lead to bad plans
-		// DISABLED: Model predictions are currently hurting performance (26% regression)
-		// TODO: Fix feature engineering before re-enabling
 		if (RLBoostingModel::Get().GetNumTrees() < 100) {
 			return 0.0;
 		}
 
-		// CACHING: Check local cache first to avoid redundant XGBoost inference
-		// The optimizer often asks for the same prediction multiple times
-		static std::unordered_map<std::string, double> prediction_cache;
-		static std::mutex cache_mutex;
+		// CACHING: Use THREAD-LOCAL cache to avoid lock contention on HPC
+		// Each thread has its own cache - NO MUTEX NEEDED for cache lookups!
+		thread_local std::unordered_map<std::string, double> prediction_cache;
+		thread_local idx_t cache_query_id = 0;
+		
+		// Clear cache periodically (every 100 queries per thread)
+		static std::atomic<idx_t> global_query_counter{0};
+		idx_t current_query = global_query_counter.load(std::memory_order_relaxed);
+		if (cache_query_id != current_query / 100) {
+			prediction_cache.clear();
+			cache_query_id = current_query / 100;
+		}
 		
 		std::string cache_key = features.join_relation_set;
-		{
-			std::lock_guard<std::mutex> lock(cache_mutex);
-			auto it = prediction_cache.find(cache_key);
-			if (it != prediction_cache.end()) {
-				return it->second;
-			}
+		auto it = prediction_cache.find(cache_key);
+		if (it != prediction_cache.end()) {
+			return it->second;  // Cache hit - NO LOCK!
 		}
 
 		// Convert JoinFeatures to OperatorFeatures for the model
@@ -116,16 +120,14 @@ RLModelInterface::RLModelInterface(ClientContext &context) : context(context), e
 		// Predict
 		double prediction = RLBoostingModel::Get().Predict(feature_vec);
 
-		// Printer::Print("[RL DEBUG] Model returned: " + std::to_string(prediction) + " for " + cache_key + "\n");
-
-		// Cache the result
-		{
-			std::lock_guard<std::mutex> lock(cache_mutex);
-			if (prediction_cache.size() > 500) {
-				prediction_cache.clear(); // Prevent unbounded growth
-			}
-			prediction_cache[cache_key] = prediction;
+		// Cache the result - thread_local so no lock needed!
+		if (prediction_cache.size() > 1000) {
+			prediction_cache.clear();  // Prevent unbounded growth
 		}
+		prediction_cache[cache_key] = prediction;
+		
+		// Increment global counter for cache invalidation
+		global_query_counter.fetch_add(1, std::memory_order_relaxed);
 
 		return prediction;
 	});
