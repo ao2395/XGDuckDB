@@ -1,0 +1,6 @@
+Failed Queries - Vanilla DuckDB Baseline
+================================================================================
+
+Query 4
+Error: Failed to match operators
+
