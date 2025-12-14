@@ -5,10 +5,12 @@
 #include "duckdb/function/table/table_scan.hpp"
 #include "duckdb/optimizer/join_order/join_node.hpp"
 #include "duckdb/optimizer/join_order/query_graph_manager.hpp"
-#include "duckdb/optimizer/rl_feature_collector.hpp"
+#include "duckdb/common/helper.hpp"
 #include "duckdb/planner/expression_iterator.hpp"
 #include "duckdb/planner/operator/logical_comparison_join.hpp"
 #include "duckdb/storage/data_table.hpp"
+#include "duckdb/main/rl_model_interface.hpp"
+#include "duckdb/main/client_context.hpp"
 
 #include <math.h>
 
@@ -218,30 +220,20 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
                                                    FilterInfoWithTotalDomains &filter) {
 	double new_denom = left.denom * right.denom;
 
-	// Collect join features for RL model
-	JoinFeatures rl_join_features;
-	rl_join_features.join_type = EnumUtil::ToString(filter.filter_info->join_type);
-
-	// Get actual cardinalities (not just relation count)
-	// Note: GetNumerator multiplies all cardinalities in the set, which is correct for the numerator
-	// but for left/right cardinalities we want the product of all relations in each side
-	rl_join_features.left_relation_card = static_cast<idx_t>(GetNumerator(*left.relations));
-	rl_join_features.right_relation_card = static_cast<idx_t>(GetNumerator(*right.relations));
-	rl_join_features.left_denominator = left.denom;
-	rl_join_features.right_denominator = right.denom;
-
-	// Get the relation set for this join (use reference since JoinRelationSet can't be copied)
+	// Get the relation set for this join
 	auto &combined_relations = set_manager.Union(*left.relations, *right.relations);
-	rl_join_features.join_relation_set = combined_relations.ToString();
-	rl_join_features.num_relations = combined_relations.count;
 
-	// Store TDOM values
-	rl_join_features.tdom_from_hll = filter.has_tdom_hll;
-	rl_join_features.tdom_value = filter.has_tdom_hll ? filter.tdom_hll : filter.tdom_no_hll;
+	// NO RL FEATURE COLLECTION IN CalculateUpdatedDenom
+	// This function is called O(edges × combinations) times during join order optimization
+	// For queries with many tables, that's potentially millions of calls
+	// Learned optimizers (Bao, Neo, etc.) don't predict during plan enumeration - they predict AFTER
+	// RL features are collected ONLY during physical plan creation (after join order is chosen)
+
+	// Store TDOM values for DuckDB's native estimation
+	idx_t tdom_value = filter.has_tdom_hll ? filter.tdom_hll : filter.tdom_no_hll;
 
 	switch (filter.filter_info->join_type) {
 	case JoinType::INNER: {
-		// Collect comparison types
 		ExpressionType comparison_type = ExpressionType::INVALID;
 		ExpressionIterator::EnumerateExpression(filter.filter_info->filter, [&](Expression &expr) {
 			if (expr.GetExpressionClass() == ExpressionClass::BOUND_COMPARISON) {
@@ -249,27 +241,16 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
 			}
 		});
 
-		// Store comparison type
-		rl_join_features.comparison_type = ExpressionTypeToString(comparison_type);
-
 		if (comparison_type == ExpressionType::INVALID) {
-			new_denom *=
-			    filter.has_tdom_hll ? static_cast<double>(filter.tdom_hll) : static_cast<double>(filter.tdom_no_hll);
-			// no comparison is taking place, so the denominator is just the product of the left and right
-			// Save the join features before returning
-			RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
+			new_denom *= static_cast<double>(tdom_value);
 			return new_denom;
 		}
 
-		// extra_ratio helps represents how many tuples will be filtered out if the comparison evaluates to
-		// false. set to 1 to assume cross product.
 		double extra_ratio = 1;
 		switch (comparison_type) {
 		case ExpressionType::COMPARE_EQUAL:
 		case ExpressionType::COMPARE_NOT_DISTINCT_FROM:
-			// extra ratio stays 1
-			extra_ratio =
-			    filter.has_tdom_hll ? static_cast<double>(filter.tdom_hll) : static_cast<double>(filter.tdom_no_hll);
+			extra_ratio = static_cast<double>(tdom_value);
 			break;
 		case ExpressionType::COMPARE_LESSTHANOREQUALTO:
 		case ExpressionType::COMPARE_LESSTHAN:
@@ -277,19 +258,12 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
 		case ExpressionType::COMPARE_GREATERTHAN:
 		case ExpressionType::COMPARE_NOTEQUAL:
 		case ExpressionType::COMPARE_DISTINCT_FROM:
-			// Assume this blows up, but use the tdom to bound it a bit
-			extra_ratio =
-			    filter.has_tdom_hll ? static_cast<double>(filter.tdom_hll) : static_cast<double>(filter.tdom_no_hll);
-			extra_ratio = pow(extra_ratio, 2.0 / 3.0);
+			extra_ratio = pow(static_cast<double>(tdom_value), 2.0 / 3.0);
 			break;
 		default:
 			break;
 		}
-		rl_join_features.extra_ratio = extra_ratio;
 		new_denom *= extra_ratio;
-
-		// Save the join features
-		RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
 		return new_denom;
 	}
 	case JoinType::SEMI:
@@ -300,13 +274,9 @@ double CardinalityEstimator::CalculateUpdatedDenom(Subgraph2Denominator left, Su
 		} else {
 			new_denom = right.denom * CardinalityEstimator::DEFAULT_SEMI_ANTI_SELECTIVITY;
 		}
-		// Save the join features
-		RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
 		return new_denom;
 	}
 	default:
-		// cross product - Save the join features
-		RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(rl_join_features.join_relation_set, rl_join_features);
 		return new_denom;
 	}
 }
@@ -448,33 +418,85 @@ double CardinalityEstimator::EstimateCardinalityWithSet(JoinRelationSet &new_set
 	// Printer::Print("[RL FEATURE] Numerator (product of cardinalities): " + to_string(numerator));
 	// Printer::Print("[RL FEATURE] Denominator (TDOM-based): " + to_string(denom.denominator));
 
-	double result = numerator / denom.denominator;
+	double duckdb_result = numerator / denom.denominator;
 
-	// Update the join features with final numerator, denominator, and estimated cardinality
-	// The detailed join features (TDOM, join type, etc.) were already collected in CalculateUpdatedDenom()
-	// Look up by relation set first (most reliable)
-	auto existing_features = RLFeatureCollector::Get().GetJoinFeaturesByRelationSet(new_set.ToString());
-	if (!existing_features) {
-		// If no detailed features exist yet, create a basic entry
-		JoinFeatures rl_join_features;
-		rl_join_features.join_relation_set = new_set.ToString();
-		rl_join_features.num_relations = new_set.count;
-		rl_join_features.numerator = numerator;
-		rl_join_features.denominator = denom.denominator;
-		rl_join_features.estimated_cardinality = result;
-		RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(new_set.ToString(), rl_join_features);
-	} else {
-		// Update existing features with final values
-		existing_features->numerator = numerator;
-		existing_features->denominator = denom.denominator;
-		existing_features->estimated_cardinality = result;
-		// Now also store by estimated cardinality for easy lookup later
-		RLFeatureCollector::Get().AddJoinFeaturesByRelationSet(new_set.ToString(), *existing_features);
+	// If an RL model is available, use it to override the join-set cardinality used by join-order DP.
+	// This is cached per JoinRelationSet to keep overhead bounded.
+	double effective_result = duckdb_result;
+	if (client_context) {
+		RLModelInterface rl_model(*client_context);
+		OperatorFeatures features;
+		features.operator_type = "JOIN_ORDER_SET";
+		features.operator_name = "JoinOrderSet";
+		features.estimated_cardinality =
+		    LossyNumericCast<idx_t>(MinValue<double>(duckdb_result, (double)NumericLimits<idx_t>::Maximum()));
+
+		// Populate join features (minimal but stable for relation-set inference)
+		features.join_type = "INNER";
+		features.join_relation_set = new_set.ToString();
+		features.num_relations = new_set.count;
+		features.numerator = numerator;
+		features.denominator = denom.denominator;
+
+		// Representative TDOM: min across edges in the set (if any)
+		auto edges = GetEdges(relations_to_tdoms, new_set);
+		idx_t min_tdom = 0;
+		bool any_hll = false;
+		bool any_eq = false;
+		for (auto &edge : edges) {
+			auto tdom_value = edge.has_tdom_hll ? edge.tdom_hll : edge.tdom_no_hll;
+			if (tdom_value > 0) {
+				min_tdom = min_tdom == 0 ? tdom_value : MinValue(min_tdom, tdom_value);
+			}
+			any_hll = any_hll || edge.has_tdom_hll;
+
+			// Try to detect equality join predicates
+			if (edge.filter_info && edge.filter_info->filter) {
+				ExpressionIterator::EnumerateExpression(edge.filter_info->filter, [&](Expression &expr) {
+					if (expr.GetExpressionClass() != ExpressionClass::BOUND_COMPARISON) {
+						return;
+					}
+					auto et = expr.GetExpressionType();
+					if (et == ExpressionType::COMPARE_EQUAL || et == ExpressionType::COMPARE_NOT_DISTINCT_FROM) {
+						any_eq = true;
+					}
+				});
+			}
+		}
+		features.tdom_value = min_tdom;
+		features.tdom_from_hll = any_hll;
+		features.comparison_type_join = any_eq ? "EQUAL" : "";
+
+		// Provide stable left/right context: top-2 leaf cardinalities in the set
+		idx_t max1 = 0;
+		idx_t max2 = 0;
+		for (idx_t i = 0; i < new_set.count; i++) {
+			auto &single_node_set = set_manager.GetJoinRelation(new_set.relations[i]);
+			auto it = relation_set_2_cardinality.find(single_node_set.ToString());
+			if (it == relation_set_2_cardinality.end()) {
+				continue;
+			}
+			auto c = LossyNumericCast<idx_t>(
+			    MinValue<double>(it->second.cardinality_before_filters, (double)NumericLimits<idx_t>::Maximum()));
+			if (c >= max1) {
+				max2 = max1;
+				max1 = c;
+			} else if (c > max2) {
+				max2 = c;
+			}
+		}
+		features.left_cardinality = max1;
+		features.right_cardinality = max2 > 0 ? max2 : max1;
+
+		const auto rl_pred = rl_model.PredictPlanningCardinality(features);
+		if (rl_pred > 0) {
+			effective_result = (double)rl_pred;
+		}
 	}
 
-	auto new_entry = CardinalityHelper(result);
+	auto new_entry = CardinalityHelper(effective_result);
 	relation_set_2_cardinality[new_set.ToString()] = new_entry;
-	return result;
+	return effective_result;
 }
 
 template <>
@@ -513,6 +535,11 @@ void CardinalityEstimator::InitCardinalityEstimatorProps(optional_ptr<JoinRelati
 	// sort relations from greatest tdom to lowest tdom.
 	std::sort(relations_to_tdoms.begin(), relations_to_tdoms.end(), SortTdoms);
 }
+
+void CardinalityEstimator::ResetQueryPredictionCap() {
+	// No-op: RL predictions are now done during physical plan creation, not join order optimization
+}
+
 
 void CardinalityEstimator::UpdateTotalDomains(optional_ptr<JoinRelationSet> set, RelationStats &stats) {
 	D_ASSERT(set->count == 1);

@@ -15,17 +15,16 @@ PhysicalOperator &PhysicalPlanGenerator::CreatePlan(LogicalFilter &op) {
 	D_ASSERT(op.children.size() == 1);
 	reference<PhysicalOperator> plan = CreatePlan(*op.children[0]);
 
-	// RL MODEL INFERENCE: After child is created, extract features and get estimate
+	// RL MODEL INFERENCE (observe-only): After child is created, extract features and compute a prediction.
+	// IMPORTANT: Do NOT override `op.estimated_cardinality` - planning must not depend on RL estimates.
 	RLModelInterface rl_model(context);
 	auto features = rl_model.ExtractFeatures(op, context);
-	// IMPORTANT: Use the physical child's cardinality (which may have been set by RL model),
-	// not the logical child's cardinality (which still has DuckDB's original estimate)
+	// Use the physical child's cardinality as context.
 	features.child_cardinality = plan.get().estimated_cardinality;
-	idx_t original_duckdb_estimate = op.estimated_cardinality;  // For debugging/comparison only
-	auto rl_estimate = rl_model.GetCardinalityEstimate(features);
-	if (rl_estimate > 0) {
-		op.estimated_cardinality = rl_estimate;
-	}
+	const idx_t original_duckdb_estimate =
+	    op.has_duckdb_estimated_cardinality ? op.duckdb_estimated_cardinality : op.estimated_cardinality;
+	const idx_t rl_raw_prediction = rl_model.PredictCardinality(features);
+	const idx_t rl_prediction = rl_raw_prediction > 0 ? rl_raw_prediction : original_duckdb_estimate;
 
 	if (!op.expressions.empty()) {
 		D_ASSERT(!plan.get().GetTypes().empty());
@@ -34,9 +33,7 @@ PhysicalOperator &PhysicalPlanGenerator::CreatePlan(LogicalFilter &op) {
 		filter.children.push_back(plan);
 
 		// Attach RL state to track prediction for training
-		if (rl_estimate > 0) {
-			rl_model.AttachRLState(filter, features, rl_estimate, original_duckdb_estimate);
-		}
+		rl_model.AttachRLState(filter, features, rl_prediction, original_duckdb_estimate);
 
 		plan = filter;
 	}

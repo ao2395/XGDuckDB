@@ -23,6 +23,7 @@
 #include "duckdb/optimizer/regex_range_filter.hpp"
 #include "duckdb/optimizer/remove_duplicate_groups.hpp"
 #include "duckdb/optimizer/remove_unused_columns.hpp"
+#include "duckdb/optimizer/rl_cardinality_optimizer.hpp"
 #include "duckdb/optimizer/rule/distinct_aggregate_optimizer.hpp"
 #include "duckdb/optimizer/rule/equal_or_null_simplification.hpp"
 #include "duckdb/optimizer/rule/in_clause_simplification.hpp"
@@ -226,6 +227,13 @@ void Optimizer::RunBuiltInOptimizers() {
 		column_lifetime.VisitOperator(*plan);
 	});
 
+	// Replace DuckDB estimates with RL estimates so subsequent decisions (build/probe, TopN, etc.) use RL.
+	// NOTE: At this point statistics propagation has not run yet, so collector-based features may be absent.
+	RunOptimizer(OptimizerType::EXTENSION, [&]() {
+		RLCardinalityOptimizer rl_cardinality_optimizer(context);
+		rl_cardinality_optimizer.VisitOperator(*plan);
+	});
+
 	// Once we know the column lifetime, we have more information regarding
 	// what relations should be the build side/probe side.
 	RunOptimizer(OptimizerType::BUILD_SIDE_PROBE_SIDE, [&]() {
@@ -293,6 +301,13 @@ void Optimizer::RunBuiltInOptimizers() {
 	RunOptimizer(OptimizerType::JOIN_FILTER_PUSHDOWN, [&]() {
 		JoinFilterPushdownOptimizer join_filter_pushdown(*this);
 		join_filter_pushdown.VisitOperator(*plan);
+	});
+
+	// Final pass: ensure the final logical plan (after all rewrites) has RL cardinalities
+	// so physical plan creation and join algorithm selection consume RL estimates.
+	RunOptimizer(OptimizerType::EXTENSION, [&]() {
+		RLCardinalityOptimizer rl_cardinality_optimizer(context);
+		rl_cardinality_optimizer.VisitOperator(*plan);
 	});
 }
 

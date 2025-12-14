@@ -17,11 +17,13 @@
 namespace duckdb {
 
 LogicalOperator::LogicalOperator(LogicalOperatorType type)
-    : type(type), estimated_cardinality(0), has_estimated_cardinality(false) {
+    : type(type), estimated_cardinality(0), has_estimated_cardinality(false), duckdb_estimated_cardinality(0),
+      has_duckdb_estimated_cardinality(false) {
 }
 
 LogicalOperator::LogicalOperator(LogicalOperatorType type, vector<unique_ptr<Expression>> expressions)
-    : type(type), expressions(std::move(expressions)), estimated_cardinality(0), has_estimated_cardinality(false) {
+    : type(type), expressions(std::move(expressions)), estimated_cardinality(0), has_estimated_cardinality(false),
+      duckdb_estimated_cardinality(0), has_duckdb_estimated_cardinality(false) {
 }
 
 LogicalOperator::~LogicalOperator() {

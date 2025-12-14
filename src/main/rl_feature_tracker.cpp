@@ -11,11 +11,28 @@
 #include "duckdb/main/config.hpp"
 #include "duckdb/common/printer.hpp"
 #include <mutex>
+#include <vector>
 
 namespace duckdb {
 
+// Global counter for unique tracker IDs
+static std::atomic<uint64_t> global_tracker_ids{1};
+
+// Thread-local cache structure using a vector for fast linear scan
+struct RLThreadCache {
+	uint64_t tracker_id = 0;
+	uint64_t generation = 0;
+	// Cache entries: PhysicalOperator* -> RLOperatorStats*
+	// Using vector because N is small (pipeline operators)
+	std::vector<std::pair<const PhysicalOperator*, RLOperatorStats*>> entries;
+};
+
+static thread_local RLThreadCache local_cache;
+
 RLFeatureTracker::RLFeatureTracker(ClientContext &context) : context(context), enabled(true) {
-	// RL feature tracking is always enabled
+	// Assign unique ID
+	tracker_id = global_tracker_ids++;
+	generation = 1;
 }
 
 void RLFeatureTracker::StartOperator(optional_ptr<const PhysicalOperator> phys_op) {
@@ -23,13 +40,32 @@ void RLFeatureTracker::StartOperator(optional_ptr<const PhysicalOperator> phys_o
 		return;
 	}
 
-	std::lock_guard<std::mutex> guard(lock);
-	auto &stats = operator_stats[*phys_op];
+	// Validate cache
+	if (local_cache.tracker_id != tracker_id || local_cache.generation != generation) {
+		local_cache.tracker_id = tracker_id;
+		local_cache.generation = generation;
+		local_cache.entries.clear();
+	}
 
-	// Only initialize once per operator (multiple workers may call this)
+	// Check thread-local cache first (Fast Path - Linear Scan)
+	for (const auto &entry : local_cache.entries) {
+		if (entry.first == phys_op.get()) {
+			return;
+		}
+	}
+
+	// Slow Path: Acquire lock
+	std::lock_guard<std::mutex> guard(lock);
+	
+	auto &stats = operator_stats[*phys_op];
 	if (stats.estimated_cardinality == 0) {
 		stats.operator_name = phys_op->GetName();
 		stats.estimated_cardinality = phys_op->estimated_cardinality;
+	}
+
+	// Cache the pointer
+	if (local_cache.entries.size() < 64) { // Cap size to prevent degradation
+		local_cache.entries.emplace_back(phys_op.get(), &stats);
 	}
 }
 
@@ -38,10 +74,30 @@ void RLFeatureTracker::EndOperator(optional_ptr<const PhysicalOperator> phys_op,
 		return;
 	}
 
-	// No lock needed - atomic add handles thread safety
-	auto it = operator_stats.find(*phys_op);
-	if (it != operator_stats.end()) {
-		it->second.AddActualRows(actual_rows);
+	// Validate cache
+	if (local_cache.tracker_id != tracker_id || local_cache.generation != generation) {
+		local_cache.tracker_id = tracker_id;
+		local_cache.generation = generation;
+		local_cache.entries.clear();
+	}
+
+	// Check thread-local cache first (Fast Path - Linear Scan)
+	for (const auto &entry : local_cache.entries) {
+		if (entry.first == phys_op.get()) {
+			entry.second->AddActualRows(actual_rows);
+			return;
+		}
+	}
+
+	// Slow Path: Acquire lock
+	std::lock_guard<std::mutex> guard(lock);
+	auto global_it = operator_stats.find(*phys_op);
+	if (global_it != operator_stats.end()) {
+		global_it->second.AddActualRows(actual_rows);
+		// Cache it now
+		if (local_cache.entries.size() < 64) {
+			local_cache.entries.emplace_back(phys_op.get(), &global_it->second);
+		}
 	}
 }
 
@@ -78,6 +134,8 @@ void RLFeatureTracker::Reset() {
 	}
 
 	std::lock_guard<std::mutex> guard(lock);
+	// Increment generation to invalidate all thread-local caches
+	generation++;
 	operator_stats.clear();
 }
 

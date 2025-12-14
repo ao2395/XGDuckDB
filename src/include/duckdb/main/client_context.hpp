@@ -52,6 +52,7 @@ class BufferedData;
 struct ClientData;
 class ClientContextState;
 class RegisteredStateManager;
+class RLModelInterface;
 
 struct PendingQueryParameters {
 	//! Prepared statement parameters (if any)
@@ -88,6 +89,8 @@ public:
 	unique_ptr<ClientData> client_data;
 	//! Data for the currently running transaction
 	TransactionContext transaction;
+	//! The RL model interface for this client context
+	unique_ptr<RLModelInterface> rl_model;
 
 public:
 	MetaTransaction &ActiveTransaction() {

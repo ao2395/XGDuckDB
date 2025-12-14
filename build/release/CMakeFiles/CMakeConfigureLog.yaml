@@ -1,0 +1,1441 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineSystem.cmake:211 (message)"
+      - "CMakeLists.txt:23 (project)"
+    message: |
+      The system is: Linux - 4.18.0-193.6.3.el8_2.x86_64 - x86_64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:23 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: /share/apps/NYUAD5/gcc/9.2.0/bin/cc 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+      
+      The C compiler identification is GNU, found in:
+        /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/3.27.2/CompilerIdC/a.out
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:23 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: /share/apps/NYUAD5/gcc/9.2.0/bin/c++ 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+      
+      The CXX compiler identification is GNU, found in:
+        /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/3.27.2/CompilerIdCXX/a.out
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:23 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-WFNoXW"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-WFNoXW"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-WFNoXW'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_0083d
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/cc   -v -o CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o -c /share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCCompilerABI.c
+        Using built-in specs.
+        COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/cc
+        Target: x86_64-pc-linux-gnu
+        Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib
+        Thread model: posix
+        gcc version 9.2.0 (GCC) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+         /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/cc1 -quiet -v /share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o -version -o /tmpdata/ccd8c9e5.s
+        GNU C17 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)
+        	compiled by GNU C version 9.2.0, GMP version 6.1.2, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"
+        ignoring nonexistent directory "/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../x86_64-pc-linux-gnu/include"
+        ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//binutils/2.33.1/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//isl/0.22/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//mpc/1.1.0/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//mpfr/4.0.2/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//gmp/6.1.2/include"
+          as it is a non-system directory that duplicates a system directory
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /share/apps/NYUAD5/gcc/9.2.0/include
+         /share/apps/NYUAD5//binutils/2.33.1/include
+         /share/apps/NYUAD5//isl/0.22/include
+         /share/apps/NYUAD5//mpc/1.1.0/include
+         /share/apps/NYUAD5//mpfr/4.0.2/include
+         /share/apps/NYUAD5//gmp/6.1.2/include
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include
+         /usr/local/include
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed
+         /usr/include
+        End of search list.
+        GNU C17 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)
+        	compiled by GNU C version 9.2.0, GMP version 6.1.2, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        Compiler executable checksum: 672931403321d2e48d32550d779a5479
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+         as -v --64 -o CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o /tmpdata/ccd8c9e5.s
+        GNU assembler version 2.33.1 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.33.1
+        COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/
+        LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/cc  -v CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o -o cmTC_0083d   && :
+        Using built-in specs.
+        COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/cc
+        COLLECT_LTO_WRAPPER=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper
+        Target: x86_64-pc-linux-gnu
+        Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib
+        Thread model: posix
+        gcc version 9.2.0 (GCC) 
+        COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/
+        LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_0083d' '-mtune=generic' '-march=x86-64'
+         /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/collect2 -plugin /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/liblto_plugin.so -plugin-opt=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper -plugin-opt=-fresolution=/tmpdata/ccZgV3T7.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_0083d /lib/../lib64/crt1.o /lib/../lib64/crti.o /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o -L/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib64 -L/share/apps/NYUAD5//binutils/2.33.1/lib -L/share/apps/NYUAD5//isl/0.22/lib -L/share/apps/NYUAD5//mpc/1.1.0/lib -L/share/apps/NYUAD5//mpfr/4.0.2/lib -L/share/apps/NYUAD5//gmp/6.1.2/lib -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../.. CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o /lib/../lib64/crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_0083d' '-mtune=generic' '-march=x86-64'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:23 (project)"
+    message: |
+      Parsed C implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/share/apps/NYUAD5/gcc/9.2.0/include]
+          add: [/share/apps/NYUAD5//binutils/2.33.1/include]
+          add: [/share/apps/NYUAD5//isl/0.22/include]
+          add: [/share/apps/NYUAD5//mpc/1.1.0/include]
+          add: [/share/apps/NYUAD5//mpfr/4.0.2/include]
+          add: [/share/apps/NYUAD5//gmp/6.1.2/include]
+          add: [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include]
+          add: [/usr/local/include]
+          add: [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed]
+          add: [/usr/include]
+        end of search list found
+        collapse include dir [/share/apps/NYUAD5/gcc/9.2.0/include] ==> [/share/apps/NYUAD5/gcc/9.2.0/include]
+        collapse include dir [/share/apps/NYUAD5//binutils/2.33.1/include] ==> [/share/apps/NYUAD5/binutils/2.33.1/include]
+        collapse include dir [/share/apps/NYUAD5//isl/0.22/include] ==> [/share/apps/NYUAD5/isl/0.22/include]
+        collapse include dir [/share/apps/NYUAD5//mpc/1.1.0/include] ==> [/share/apps/NYUAD5/mpc/1.1.0/include]
+        collapse include dir [/share/apps/NYUAD5//mpfr/4.0.2/include] ==> [/share/apps/NYUAD5/mpfr/4.0.2/include]
+        collapse include dir [/share/apps/NYUAD5//gmp/6.1.2/include] ==> [/share/apps/NYUAD5/gmp/6.1.2/include]
+        collapse include dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include]
+        collapse include dir [/usr/local/include] ==> [/usr/local/include]
+        collapse include dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        implicit include dirs: [/share/apps/NYUAD5/gcc/9.2.0/include;/share/apps/NYUAD5/binutils/2.33.1/include;/share/apps/NYUAD5/isl/0.22/include;/share/apps/NYUAD5/mpc/1.1.0/include;/share/apps/NYUAD5/mpfr/4.0.2/include;/share/apps/NYUAD5/gmp/6.1.2/include;/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include;/usr/local/include;/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed;/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:152 (message)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:23 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-WFNoXW']
+        ignore line: []
+        ignore line: [Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_0083d]
+        ignore line: [[1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/cc   -v -o CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o -c /share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCCompilerABI.c]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/cc]
+        ignore line: [Target: x86_64-pc-linux-gnu]
+        ignore line: [Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib]
+        ignore line: [Thread model: posix]
+        ignore line: [gcc version 9.2.0 (GCC) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/cc1 -quiet -v /share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o -version -o /tmpdata/ccd8c9e5.s]
+        ignore line: [GNU C17 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)]
+        ignore line: [	compiled by GNU C version 9.2.0  GMP version 6.1.2  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"]
+        ignore line: [ignoring nonexistent directory "/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../x86_64-pc-linux-gnu/include"]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//binutils/2.33.1/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//isl/0.22/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//mpc/1.1.0/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//mpfr/4.0.2/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//gmp/6.1.2/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/include]
+        ignore line: [ /share/apps/NYUAD5//binutils/2.33.1/include]
+        ignore line: [ /share/apps/NYUAD5//isl/0.22/include]
+        ignore line: [ /share/apps/NYUAD5//mpc/1.1.0/include]
+        ignore line: [ /share/apps/NYUAD5//mpfr/4.0.2/include]
+        ignore line: [ /share/apps/NYUAD5//gmp/6.1.2/include]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include]
+        ignore line: [ /usr/local/include]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [GNU C17 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)]
+        ignore line: [	compiled by GNU C version 9.2.0  GMP version 6.1.2  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [Compiler executable checksum: 672931403321d2e48d32550d779a5479]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+        ignore line: [ as -v --64 -o CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o /tmpdata/ccd8c9e5.s]
+        ignore line: [GNU assembler version 2.33.1 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.33.1]
+        ignore line: [COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+        ignore line: [[2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/cc  -v CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o -o cmTC_0083d   && :]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/cc]
+        ignore line: [COLLECT_LTO_WRAPPER=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper]
+        ignore line: [Target: x86_64-pc-linux-gnu]
+        ignore line: [Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib]
+        ignore line: [Thread model: posix]
+        ignore line: [gcc version 9.2.0 (GCC) ]
+        ignore line: [COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_0083d' '-mtune=generic' '-march=x86-64']
+        link line: [ /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/collect2 -plugin /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/liblto_plugin.so -plugin-opt=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper -plugin-opt=-fresolution=/tmpdata/ccZgV3T7.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_0083d /lib/../lib64/crt1.o /lib/../lib64/crti.o /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o -L/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib64 -L/share/apps/NYUAD5//binutils/2.33.1/lib -L/share/apps/NYUAD5//isl/0.22/lib -L/share/apps/NYUAD5//mpc/1.1.0/lib -L/share/apps/NYUAD5//mpfr/4.0.2/lib -L/share/apps/NYUAD5//gmp/6.1.2/lib -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../.. CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o /lib/../lib64/crtn.o]
+          arg [/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmpdata/ccZgV3T7.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_0083d] ==> ignore
+          arg [/lib/../lib64/crt1.o] ==> obj [/lib/../lib64/crt1.o]
+          arg [/lib/../lib64/crti.o] ==> obj [/lib/../lib64/crti.o]
+          arg [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o] ==> obj [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64]
+          arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+          arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib64] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+          arg [-L/share/apps/NYUAD5//binutils/2.33.1/lib] ==> dir [/share/apps/NYUAD5//binutils/2.33.1/lib]
+          arg [-L/share/apps/NYUAD5//isl/0.22/lib] ==> dir [/share/apps/NYUAD5//isl/0.22/lib]
+          arg [-L/share/apps/NYUAD5//mpc/1.1.0/lib] ==> dir [/share/apps/NYUAD5//mpc/1.1.0/lib]
+          arg [-L/share/apps/NYUAD5//mpfr/4.0.2/lib] ==> dir [/share/apps/NYUAD5//mpfr/4.0.2/lib]
+          arg [-L/share/apps/NYUAD5//gmp/6.1.2/lib] ==> dir [/share/apps/NYUAD5//gmp/6.1.2/lib]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../..] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../..]
+          arg [CMakeFiles/cmTC_0083d.dir/CMakeCCompilerABI.c.o] ==> ignore
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [-lc] ==> lib [c]
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o] ==> obj [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o]
+          arg [/lib/../lib64/crtn.o] ==> obj [/lib/../lib64/crtn.o]
+        collapse obj [/lib/../lib64/crt1.o] ==> [/lib64/crt1.o]
+        collapse obj [/lib/../lib64/crti.o] ==> [/lib64/crti.o]
+        collapse obj [/lib/../lib64/crtn.o] ==> [/lib64/crtn.o]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+        collapse library dir [/lib/../lib64] ==> [/lib64]
+        collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib64] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+        collapse library dir [/share/apps/NYUAD5//binutils/2.33.1/lib] ==> [/share/apps/NYUAD5/binutils/2.33.1/lib]
+        collapse library dir [/share/apps/NYUAD5//isl/0.22/lib] ==> [/share/apps/NYUAD5/isl/0.22/lib]
+        collapse library dir [/share/apps/NYUAD5//mpc/1.1.0/lib] ==> [/share/apps/NYUAD5/mpc/1.1.0/lib]
+        collapse library dir [/share/apps/NYUAD5//mpfr/4.0.2/lib] ==> [/share/apps/NYUAD5/mpfr/4.0.2/lib]
+        collapse library dir [/share/apps/NYUAD5//gmp/6.1.2/lib] ==> [/share/apps/NYUAD5/gmp/6.1.2/lib]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../..] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib]
+        implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
+        implicit objs: [/lib64/crt1.o;/lib64/crti.o;/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o;/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o;/lib64/crtn.o]
+        implicit dirs: [/share/apps/NYUAD5/gcc/9.2.0/lib64;/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0;/lib64;/usr/lib64;/share/apps/NYUAD5/binutils/2.33.1/lib;/share/apps/NYUAD5/isl/0.22/lib;/share/apps/NYUAD5/mpc/1.1.0/lib;/share/apps/NYUAD5/mpfr/4.0.2/lib;/share/apps/NYUAD5/gmp/6.1.2/lib;/share/apps/NYUAD5/gcc/9.2.0/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:23 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-GEpH25"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-GEpH25"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-GEpH25'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_96dbb
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/c++   -v -o CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o -c /share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp
+        Using built-in specs.
+        COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/c++
+        Target: x86_64-pc-linux-gnu
+        Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib
+        Thread model: posix
+        gcc version 9.2.0 (GCC) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+         /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/cc1plus -quiet -v -D_GNU_SOURCE /share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o -version -o /tmpdata/cclCzTsi.s
+        GNU C++14 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)
+        	compiled by GNU C version 9.2.0, GMP version 6.1.2, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"
+        ignoring nonexistent directory "/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../x86_64-pc-linux-gnu/include"
+        ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//binutils/2.33.1/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//isl/0.22/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//mpc/1.1.0/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//mpfr/4.0.2/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//gmp/6.1.2/include"
+          as it is a non-system directory that duplicates a system directory
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /share/apps/NYUAD5/gcc/9.2.0/include
+         /share/apps/NYUAD5//binutils/2.33.1/include
+         /share/apps/NYUAD5//isl/0.22/include
+         /share/apps/NYUAD5//mpc/1.1.0/include
+         /share/apps/NYUAD5//mpfr/4.0.2/include
+         /share/apps/NYUAD5//gmp/6.1.2/include
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include
+         /usr/local/include
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed
+         /usr/include
+        End of search list.
+        GNU C++14 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)
+        	compiled by GNU C version 9.2.0, GMP version 6.1.2, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        Compiler executable checksum: 58570e80e2c673e7e142ee7eb14372ba
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+         as -v --64 -o CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o /tmpdata/cclCzTsi.s
+        GNU assembler version 2.33.1 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.33.1
+        COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/
+        LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/c++  -v CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_96dbb   && :
+        Using built-in specs.
+        COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/c++
+        COLLECT_LTO_WRAPPER=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper
+        Target: x86_64-pc-linux-gnu
+        Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib
+        Thread model: posix
+        gcc version 9.2.0 (GCC) 
+        COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/
+        LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_96dbb' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+         /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/collect2 -plugin /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/liblto_plugin.so -plugin-opt=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper -plugin-opt=-fresolution=/tmpdata/ccvLZFPk.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_96dbb /lib/../lib64/crt1.o /lib/../lib64/crti.o /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o -L/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib64 -L/share/apps/NYUAD5//binutils/2.33.1/lib -L/share/apps/NYUAD5//isl/0.22/lib -L/share/apps/NYUAD5//mpc/1.1.0/lib -L/share/apps/NYUAD5//mpfr/4.0.2/lib -L/share/apps/NYUAD5//gmp/6.1.2/lib -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../.. CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o /lib/../lib64/crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_96dbb' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:23 (project)"
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/share/apps/NYUAD5/gcc/9.2.0/include]
+          add: [/share/apps/NYUAD5//binutils/2.33.1/include]
+          add: [/share/apps/NYUAD5//isl/0.22/include]
+          add: [/share/apps/NYUAD5//mpc/1.1.0/include]
+          add: [/share/apps/NYUAD5//mpfr/4.0.2/include]
+          add: [/share/apps/NYUAD5//gmp/6.1.2/include]
+          add: [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0]
+          add: [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu]
+          add: [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward]
+          add: [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include]
+          add: [/usr/local/include]
+          add: [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed]
+          add: [/usr/include]
+        end of search list found
+        collapse include dir [/share/apps/NYUAD5/gcc/9.2.0/include] ==> [/share/apps/NYUAD5/gcc/9.2.0/include]
+        collapse include dir [/share/apps/NYUAD5//binutils/2.33.1/include] ==> [/share/apps/NYUAD5/binutils/2.33.1/include]
+        collapse include dir [/share/apps/NYUAD5//isl/0.22/include] ==> [/share/apps/NYUAD5/isl/0.22/include]
+        collapse include dir [/share/apps/NYUAD5//mpc/1.1.0/include] ==> [/share/apps/NYUAD5/mpc/1.1.0/include]
+        collapse include dir [/share/apps/NYUAD5//mpfr/4.0.2/include] ==> [/share/apps/NYUAD5/mpfr/4.0.2/include]
+        collapse include dir [/share/apps/NYUAD5//gmp/6.1.2/include] ==> [/share/apps/NYUAD5/gmp/6.1.2/include]
+        collapse include dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0] ==> [/share/apps/NYUAD5/gcc/9.2.0/include/c++/9.2.0]
+        collapse include dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu] ==> [/share/apps/NYUAD5/gcc/9.2.0/include/c++/9.2.0/x86_64-pc-linux-gnu]
+        collapse include dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward] ==> [/share/apps/NYUAD5/gcc/9.2.0/include/c++/9.2.0/backward]
+        collapse include dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include]
+        collapse include dir [/usr/local/include] ==> [/usr/local/include]
+        collapse include dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        implicit include dirs: [/share/apps/NYUAD5/gcc/9.2.0/include;/share/apps/NYUAD5/binutils/2.33.1/include;/share/apps/NYUAD5/isl/0.22/include;/share/apps/NYUAD5/mpc/1.1.0/include;/share/apps/NYUAD5/mpfr/4.0.2/include;/share/apps/NYUAD5/gmp/6.1.2/include;/share/apps/NYUAD5/gcc/9.2.0/include/c++/9.2.0;/share/apps/NYUAD5/gcc/9.2.0/include/c++/9.2.0/x86_64-pc-linux-gnu;/share/apps/NYUAD5/gcc/9.2.0/include/c++/9.2.0/backward;/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include;/usr/local/include;/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed;/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:152 (message)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:23 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-GEpH25']
+        ignore line: []
+        ignore line: [Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_96dbb]
+        ignore line: [[1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/c++   -v -o CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o -c /share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/c++]
+        ignore line: [Target: x86_64-pc-linux-gnu]
+        ignore line: [Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib]
+        ignore line: [Thread model: posix]
+        ignore line: [gcc version 9.2.0 (GCC) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/cc1plus -quiet -v -D_GNU_SOURCE /share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o -version -o /tmpdata/cclCzTsi.s]
+        ignore line: [GNU C++14 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)]
+        ignore line: [	compiled by GNU C version 9.2.0  GMP version 6.1.2  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"]
+        ignore line: [ignoring nonexistent directory "/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../x86_64-pc-linux-gnu/include"]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//binutils/2.33.1/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//isl/0.22/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//mpc/1.1.0/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//mpfr/4.0.2/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//gmp/6.1.2/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/include]
+        ignore line: [ /share/apps/NYUAD5//binutils/2.33.1/include]
+        ignore line: [ /share/apps/NYUAD5//isl/0.22/include]
+        ignore line: [ /share/apps/NYUAD5//mpc/1.1.0/include]
+        ignore line: [ /share/apps/NYUAD5//mpfr/4.0.2/include]
+        ignore line: [ /share/apps/NYUAD5//gmp/6.1.2/include]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include]
+        ignore line: [ /usr/local/include]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [GNU C++14 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)]
+        ignore line: [	compiled by GNU C version 9.2.0  GMP version 6.1.2  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [Compiler executable checksum: 58570e80e2c673e7e142ee7eb14372ba]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+        ignore line: [ as -v --64 -o CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o /tmpdata/cclCzTsi.s]
+        ignore line: [GNU assembler version 2.33.1 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.33.1]
+        ignore line: [COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+        ignore line: [[2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/c++  -v CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_96dbb   && :]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/c++]
+        ignore line: [COLLECT_LTO_WRAPPER=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper]
+        ignore line: [Target: x86_64-pc-linux-gnu]
+        ignore line: [Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib]
+        ignore line: [Thread model: posix]
+        ignore line: [gcc version 9.2.0 (GCC) ]
+        ignore line: [COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_96dbb' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+        link line: [ /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/collect2 -plugin /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/liblto_plugin.so -plugin-opt=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper -plugin-opt=-fresolution=/tmpdata/ccvLZFPk.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_96dbb /lib/../lib64/crt1.o /lib/../lib64/crti.o /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o -L/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib64 -L/share/apps/NYUAD5//binutils/2.33.1/lib -L/share/apps/NYUAD5//isl/0.22/lib -L/share/apps/NYUAD5//mpc/1.1.0/lib -L/share/apps/NYUAD5//mpfr/4.0.2/lib -L/share/apps/NYUAD5//gmp/6.1.2/lib -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../.. CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o /lib/../lib64/crtn.o]
+          arg [/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmpdata/ccvLZFPk.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_96dbb] ==> ignore
+          arg [/lib/../lib64/crt1.o] ==> obj [/lib/../lib64/crt1.o]
+          arg [/lib/../lib64/crti.o] ==> obj [/lib/../lib64/crti.o]
+          arg [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o] ==> obj [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64]
+          arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+          arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib64] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+          arg [-L/share/apps/NYUAD5//binutils/2.33.1/lib] ==> dir [/share/apps/NYUAD5//binutils/2.33.1/lib]
+          arg [-L/share/apps/NYUAD5//isl/0.22/lib] ==> dir [/share/apps/NYUAD5//isl/0.22/lib]
+          arg [-L/share/apps/NYUAD5//mpc/1.1.0/lib] ==> dir [/share/apps/NYUAD5//mpc/1.1.0/lib]
+          arg [-L/share/apps/NYUAD5//mpfr/4.0.2/lib] ==> dir [/share/apps/NYUAD5//mpfr/4.0.2/lib]
+          arg [-L/share/apps/NYUAD5//gmp/6.1.2/lib] ==> dir [/share/apps/NYUAD5//gmp/6.1.2/lib]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../..] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../..]
+          arg [CMakeFiles/cmTC_96dbb.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [-lstdc++] ==> lib [stdc++]
+          arg [-lm] ==> lib [m]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lc] ==> lib [c]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o] ==> obj [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o]
+          arg [/lib/../lib64/crtn.o] ==> obj [/lib/../lib64/crtn.o]
+        collapse obj [/lib/../lib64/crt1.o] ==> [/lib64/crt1.o]
+        collapse obj [/lib/../lib64/crti.o] ==> [/lib64/crti.o]
+        collapse obj [/lib/../lib64/crtn.o] ==> [/lib64/crtn.o]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+        collapse library dir [/lib/../lib64] ==> [/lib64]
+        collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib64] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+        collapse library dir [/share/apps/NYUAD5//binutils/2.33.1/lib] ==> [/share/apps/NYUAD5/binutils/2.33.1/lib]
+        collapse library dir [/share/apps/NYUAD5//isl/0.22/lib] ==> [/share/apps/NYUAD5/isl/0.22/lib]
+        collapse library dir [/share/apps/NYUAD5//mpc/1.1.0/lib] ==> [/share/apps/NYUAD5/mpc/1.1.0/lib]
+        collapse library dir [/share/apps/NYUAD5//mpfr/4.0.2/lib] ==> [/share/apps/NYUAD5/mpfr/4.0.2/lib]
+        collapse library dir [/share/apps/NYUAD5//gmp/6.1.2/lib] ==> [/share/apps/NYUAD5/gmp/6.1.2/lib]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../..] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib]
+        implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+        implicit objs: [/lib64/crt1.o;/lib64/crti.o;/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o;/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o;/lib64/crtn.o]
+        implicit dirs: [/share/apps/NYUAD5/gcc/9.2.0/lib64;/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0;/lib64;/usr/lib64;/share/apps/NYUAD5/binutils/2.33.1/lib;/share/apps/NYUAD5/isl/0.22/lib;/share/apps/NYUAD5/mpc/1.1.0/lib;/share/apps/NYUAD5/mpfr/4.0.2/lib;/share/apps/NYUAD5/gmp/6.1.2/lib;/share/apps/NYUAD5/gcc/9.2.0/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindThreads.cmake:97 (CHECK_C_SOURCE_COMPILES)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindThreads.cmake:163 (_threads_check_libc)"
+      - "CMakeLists.txt:25 (find_package)"
+    checks:
+      - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-SfWnIf"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-SfWnIf"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_HAVE_LIBC_PTHREAD"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-SfWnIf'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_8d2f0
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/cc -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_8d2f0.dir/src.c.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-SfWnIf/src.c
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/cc   CMakeFiles/cmTC_8d2f0.dir/src.c.o -o cmTC_8d2f0   && :
+        FAILED: cmTC_8d2f0 
+        : && /share/apps/NYUAD5/gcc/9.2.0/bin/cc   CMakeFiles/cmTC_8d2f0.dir/src.c.o -o cmTC_8d2f0   && :
+        /share/apps/NYUAD5//binutils/2.33.1/bin/ld: CMakeFiles/cmTC_8d2f0.dir/src.c.o: in function `main':
+        src.c:(.text+0x2d): undefined reference to `pthread_create'
+        /share/apps/NYUAD5//binutils/2.33.1/bin/ld: src.c:(.text+0x39): undefined reference to `pthread_detach'
+        /share/apps/NYUAD5//binutils/2.33.1/bin/ld: src.c:(.text+0x45): undefined reference to `pthread_cancel'
+        /share/apps/NYUAD5//binutils/2.33.1/bin/ld: src.c:(.text+0x56): undefined reference to `pthread_join'
+        collect2: error: ld returned 1 exit status
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckLibraryExists.cmake:69 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindThreads.cmake:112 (CHECK_LIBRARY_EXISTS)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindThreads.cmake:175 (_threads_check_lib)"
+      - "CMakeLists.txt:25 (find_package)"
+    checks:
+      - "Looking for pthread_create in pthreads"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-Q7C1Mp"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-Q7C1Mp"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_HAVE_PTHREADS_CREATE"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-Q7C1Mp'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_662fc
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create -o CMakeFiles/cmTC_662fc.dir/CheckFunctionExists.c.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-Q7C1Mp/CheckFunctionExists.c
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/cc -DCHECK_FUNCTION_EXISTS=pthread_create  CMakeFiles/cmTC_662fc.dir/CheckFunctionExists.c.o -o cmTC_662fc  -lpthreads && :
+        FAILED: cmTC_662fc 
+        : && /share/apps/NYUAD5/gcc/9.2.0/bin/cc -DCHECK_FUNCTION_EXISTS=pthread_create  CMakeFiles/cmTC_662fc.dir/CheckFunctionExists.c.o -o cmTC_662fc  -lpthreads && :
+        /share/apps/NYUAD5//binutils/2.33.1/bin/ld: cannot find -lpthreads
+        collect2: error: ld returned 1 exit status
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckLibraryExists.cmake:69 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindThreads.cmake:112 (CHECK_LIBRARY_EXISTS)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindThreads.cmake:176 (_threads_check_lib)"
+      - "CMakeLists.txt:25 (find_package)"
+    checks:
+      - "Looking for pthread_create in pthread"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-WRFrcA"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-WRFrcA"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_HAVE_PTHREAD_CREATE"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-WRFrcA'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_4b540
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create -o CMakeFiles/cmTC_4b540.dir/CheckFunctionExists.c.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-WRFrcA/CheckFunctionExists.c
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/cc -DCHECK_FUNCTION_EXISTS=pthread_create  CMakeFiles/cmTC_4b540.dir/CheckFunctionExists.c.o -o cmTC_4b540  -lpthread && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckCXXSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "third_party/xgboost/cmake/PrefetchIntrinsics.cmake:3 (check_cxx_source_compiles)"
+      - "third_party/xgboost/CMakeLists.txt:44 (find_prefetch_intrinsics)"
+    checks:
+      - "Performing Test XGBOOST_MM_PREFETCH_PRESENT"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-uk9ywX"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-uk9ywX"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g -g -O0 -DDEBUG -Wall    -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -Wunused -Werror=vla -Wnarrowing -pedantic"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/scratch/ao2395/results/duckdb_rl/third_party/xgboost/cmake/modules"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "XGBOOST_MM_PREFETCH_PRESENT"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-uk9ywX'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_fb37d
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/c++ -DXGBOOST_MM_PREFETCH_PRESENT  -std=c++11 -fPIE -o CMakeFiles/cmTC_fb37d.dir/src.cxx.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-uk9ywX/src.cxx
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/c++   CMakeFiles/cmTC_fb37d.dir/src.cxx.o -o cmTC_fb37d   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckCXXSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "third_party/xgboost/cmake/PrefetchIntrinsics.cmake:12 (check_cxx_source_compiles)"
+      - "third_party/xgboost/CMakeLists.txt:44 (find_prefetch_intrinsics)"
+    checks:
+      - "Performing Test XGBOOST_BUILTIN_PREFETCH_PRESENT"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ynrUsl"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ynrUsl"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g -g -O0 -DDEBUG -Wall    -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -Wunused -Werror=vla -Wnarrowing -pedantic"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/scratch/ao2395/results/duckdb_rl/third_party/xgboost/cmake/modules"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "XGBOOST_BUILTIN_PREFETCH_PRESENT"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ynrUsl'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_51e18
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/c++ -DXGBOOST_BUILTIN_PREFETCH_PRESENT  -std=c++11 -fPIE -o CMakeFiles/cmTC_51e18.dir/src.cxx.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ynrUsl/src.cxx
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/c++   CMakeFiles/cmTC_51e18.dir/src.cxx.o -o cmTC_51e18   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindOpenMP.cmake:219 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindOpenMP.cmake:483 (_OPENMP_GET_FLAGS)"
+      - "third_party/xgboost/CMakeLists.txt:261 (find_package)"
+    description: "Detecting C OpenMP compiler info"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-c5yeUJ"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-c5yeUJ"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g -g -O0 -DDEBUG -Wall    -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -Wunused -Werror=vla -Wnarrowing -pedantic"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/scratch/ao2395/results/duckdb_rl/third_party/xgboost/cmake/modules"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "OpenMP_COMPILE_RESULT_C_fopenmp"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-c5yeUJ'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_8ddf7
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/cc   -fopenmp -v -fPIE -o CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-c5yeUJ/OpenMPTryFlag.c
+        Using built-in specs.
+        COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/cc
+        Target: x86_64-pc-linux-gnu
+        Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib
+        Thread model: posix
+        gcc version 9.2.0 (GCC) 
+        COLLECT_GCC_OPTIONS='-fopenmp' '-v' '-fPIE' '-o' 'CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o' '-c' '-mtune=generic' '-march=x86-64' '-pthread'
+         /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/cc1 -quiet -v -D_REENTRANT /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-c5yeUJ/OpenMPTryFlag.c -quiet -dumpbase OpenMPTryFlag.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o -version -fopenmp -fPIE -o /tmpdata/ccGLcQIo.s
+        GNU C17 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)
+        	compiled by GNU C version 9.2.0, GMP version 6.1.2, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"
+        ignoring nonexistent directory "/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../x86_64-pc-linux-gnu/include"
+        ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//binutils/2.33.1/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//isl/0.22/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//mpc/1.1.0/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//mpfr/4.0.2/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//gmp/6.1.2/include"
+          as it is a non-system directory that duplicates a system directory
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /share/apps/NYUAD5/gcc/9.2.0/include
+         /share/apps/NYUAD5//binutils/2.33.1/include
+         /share/apps/NYUAD5//isl/0.22/include
+         /share/apps/NYUAD5//mpc/1.1.0/include
+         /share/apps/NYUAD5//mpfr/4.0.2/include
+         /share/apps/NYUAD5//gmp/6.1.2/include
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include
+         /usr/local/include
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed
+         /usr/include
+        End of search list.
+        GNU C17 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)
+        	compiled by GNU C version 9.2.0, GMP version 6.1.2, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        Compiler executable checksum: 672931403321d2e48d32550d779a5479
+        COLLECT_GCC_OPTIONS='-fopenmp' '-v' '-fPIE' '-o' 'CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o' '-c' '-mtune=generic' '-march=x86-64' '-pthread'
+         as -v --64 -o CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o /tmpdata/ccGLcQIo.s
+        GNU assembler version 2.33.1 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.33.1
+        COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/
+        LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-fopenmp' '-v' '-fPIE' '-o' 'CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o' '-c' '-mtune=generic' '-march=x86-64' '-pthread'
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/cc -fopenmp -v  CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o -o cmTC_8ddf7  -v && :
+        Using built-in specs.
+        COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/cc
+        COLLECT_LTO_WRAPPER=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper
+        Target: x86_64-pc-linux-gnu
+        Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib
+        Thread model: posix
+        gcc version 9.2.0 (GCC) 
+        COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/
+        LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/
+        Reading specs from /share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/libgomp.spec
+        COLLECT_GCC_OPTIONS='-fopenmp' '-v' '-o' 'cmTC_8ddf7' '-v' '-mtune=generic' '-march=x86-64' '-pthread'
+         /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/collect2 -plugin /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/liblto_plugin.so -plugin-opt=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper -plugin-opt=-fresolution=/tmpdata/ccsAQl6q.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_8ddf7 /lib/../lib64/crt1.o /lib/../lib64/crti.o /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o -L/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib64 -L/share/apps/NYUAD5//binutils/2.33.1/lib -L/share/apps/NYUAD5//isl/0.22/lib -L/share/apps/NYUAD5//mpc/1.1.0/lib -L/share/apps/NYUAD5//mpfr/4.0.2/lib -L/share/apps/NYUAD5//gmp/6.1.2/lib -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../.. CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o -lgomp -lgcc --push-state --as-needed -lgcc_s --pop-state -lpthread -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o /lib/../lib64/crtn.o
+        COLLECT_GCC_OPTIONS='-fopenmp' '-v' '-o' 'cmTC_8ddf7' '-v' '-mtune=generic' '-march=x86-64' '-pthread'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindOpenMP.cmake:262 (message)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindOpenMP.cmake:483 (_OPENMP_GET_FLAGS)"
+      - "third_party/xgboost/CMakeLists.txt:261 (find_package)"
+    message: |
+      Parsed C OpenMP implicit link information from above output:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-c5yeUJ']
+        ignore line: []
+        ignore line: [Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_8ddf7]
+        ignore line: [[1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/cc   -fopenmp -v -fPIE -o CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-c5yeUJ/OpenMPTryFlag.c]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/cc]
+        ignore line: [Target: x86_64-pc-linux-gnu]
+        ignore line: [Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib]
+        ignore line: [Thread model: posix]
+        ignore line: [gcc version 9.2.0 (GCC) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-fopenmp' '-v' '-fPIE' '-o' 'CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o' '-c' '-mtune=generic' '-march=x86-64' '-pthread']
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/cc1 -quiet -v -D_REENTRANT /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-c5yeUJ/OpenMPTryFlag.c -quiet -dumpbase OpenMPTryFlag.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o -version -fopenmp -fPIE -o /tmpdata/ccGLcQIo.s]
+        ignore line: [GNU C17 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)]
+        ignore line: [	compiled by GNU C version 9.2.0  GMP version 6.1.2  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"]
+        ignore line: [ignoring nonexistent directory "/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../x86_64-pc-linux-gnu/include"]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//binutils/2.33.1/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//isl/0.22/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//mpc/1.1.0/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//mpfr/4.0.2/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//gmp/6.1.2/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/include]
+        ignore line: [ /share/apps/NYUAD5//binutils/2.33.1/include]
+        ignore line: [ /share/apps/NYUAD5//isl/0.22/include]
+        ignore line: [ /share/apps/NYUAD5//mpc/1.1.0/include]
+        ignore line: [ /share/apps/NYUAD5//mpfr/4.0.2/include]
+        ignore line: [ /share/apps/NYUAD5//gmp/6.1.2/include]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include]
+        ignore line: [ /usr/local/include]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [GNU C17 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)]
+        ignore line: [	compiled by GNU C version 9.2.0  GMP version 6.1.2  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [Compiler executable checksum: 672931403321d2e48d32550d779a5479]
+        ignore line: [COLLECT_GCC_OPTIONS='-fopenmp' '-v' '-fPIE' '-o' 'CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o' '-c' '-mtune=generic' '-march=x86-64' '-pthread']
+        ignore line: [ as -v --64 -o CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o /tmpdata/ccGLcQIo.s]
+        ignore line: [GNU assembler version 2.33.1 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.33.1]
+        ignore line: [COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-fopenmp' '-v' '-fPIE' '-o' 'CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o' '-c' '-mtune=generic' '-march=x86-64' '-pthread']
+        ignore line: [[2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/cc -fopenmp -v  CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o -o cmTC_8ddf7  -v && :]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/cc]
+        ignore line: [COLLECT_LTO_WRAPPER=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper]
+        ignore line: [Target: x86_64-pc-linux-gnu]
+        ignore line: [Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib]
+        ignore line: [Thread model: posix]
+        ignore line: [gcc version 9.2.0 (GCC) ]
+        ignore line: [COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/]
+        ignore line: [Reading specs from /share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/libgomp.spec]
+        ignore line: [COLLECT_GCC_OPTIONS='-fopenmp' '-v' '-o' 'cmTC_8ddf7' '-v' '-mtune=generic' '-march=x86-64' '-pthread']
+        link line: [ /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/collect2 -plugin /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/liblto_plugin.so -plugin-opt=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper -plugin-opt=-fresolution=/tmpdata/ccsAQl6q.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_8ddf7 /lib/../lib64/crt1.o /lib/../lib64/crti.o /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o -L/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib64 -L/share/apps/NYUAD5//binutils/2.33.1/lib -L/share/apps/NYUAD5//isl/0.22/lib -L/share/apps/NYUAD5//mpc/1.1.0/lib -L/share/apps/NYUAD5//mpfr/4.0.2/lib -L/share/apps/NYUAD5//gmp/6.1.2/lib -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../.. CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o -lgomp -lgcc --push-state --as-needed -lgcc_s --pop-state -lpthread -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o /lib/../lib64/crtn.o]
+          arg [/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmpdata/ccsAQl6q.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lpthread] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_8ddf7] ==> ignore
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64]
+          arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+          arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib64] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+          arg [-L/share/apps/NYUAD5//binutils/2.33.1/lib] ==> dir [/share/apps/NYUAD5//binutils/2.33.1/lib]
+          arg [-L/share/apps/NYUAD5//isl/0.22/lib] ==> dir [/share/apps/NYUAD5//isl/0.22/lib]
+          arg [-L/share/apps/NYUAD5//mpc/1.1.0/lib] ==> dir [/share/apps/NYUAD5//mpc/1.1.0/lib]
+          arg [-L/share/apps/NYUAD5//mpfr/4.0.2/lib] ==> dir [/share/apps/NYUAD5//mpfr/4.0.2/lib]
+          arg [-L/share/apps/NYUAD5//gmp/6.1.2/lib] ==> dir [/share/apps/NYUAD5//gmp/6.1.2/lib]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../..] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../..]
+          arg [CMakeFiles/cmTC_8ddf7.dir/OpenMPTryFlag.c.o] ==> ignore
+          arg [-lgomp] ==> lib [gomp]
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [-lpthread] ==> lib [pthread]
+          arg [-lc] ==> lib [c]
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+        collapse library dir [/lib/../lib64] ==> [/lib64]
+        collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib64] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+        collapse library dir [/share/apps/NYUAD5//binutils/2.33.1/lib] ==> [/share/apps/NYUAD5/binutils/2.33.1/lib]
+        collapse library dir [/share/apps/NYUAD5//isl/0.22/lib] ==> [/share/apps/NYUAD5/isl/0.22/lib]
+        collapse library dir [/share/apps/NYUAD5//mpc/1.1.0/lib] ==> [/share/apps/NYUAD5/mpc/1.1.0/lib]
+        collapse library dir [/share/apps/NYUAD5//mpfr/4.0.2/lib] ==> [/share/apps/NYUAD5/mpfr/4.0.2/lib]
+        collapse library dir [/share/apps/NYUAD5//gmp/6.1.2/lib] ==> [/share/apps/NYUAD5/gmp/6.1.2/lib]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../..] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib]
+        implicit libs: [gomp;gcc;gcc_s;pthread;c;gcc;gcc_s]
+        implicit objs: []
+        implicit dirs: [/share/apps/NYUAD5/gcc/9.2.0/lib64;/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0;/lib64;/usr/lib64;/share/apps/NYUAD5/binutils/2.33.1/lib;/share/apps/NYUAD5/isl/0.22/lib;/share/apps/NYUAD5/mpc/1.1.0/lib;/share/apps/NYUAD5/mpfr/4.0.2/lib;/share/apps/NYUAD5/gmp/6.1.2/lib;/share/apps/NYUAD5/gcc/9.2.0/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindOpenMP.cmake:219 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindOpenMP.cmake:483 (_OPENMP_GET_FLAGS)"
+      - "third_party/xgboost/CMakeLists.txt:261 (find_package)"
+    description: "Detecting CXX OpenMP compiler info"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-YmbwN8"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-YmbwN8"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: " -fdiagnostics-color=always"
+      CMAKE_CXX_FLAGS_DEBUG: "-g -g -O0 -DDEBUG -Wall    -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -Wunused -Werror=vla -Wnarrowing -pedantic"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/scratch/ao2395/results/duckdb_rl/third_party/xgboost/cmake/modules"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "OpenMP_COMPILE_RESULT_CXX_fopenmp"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-YmbwN8'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_331c5
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/c++   -fdiagnostics-color=always -fopenmp -v -std=c++11 -fPIE -o CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-YmbwN8/OpenMPTryFlag.cpp
+        Using built-in specs.
+        COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/c++
+        Target: x86_64-pc-linux-gnu
+        Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib
+        Thread model: posix
+        gcc version 9.2.0 (GCC) 
+        COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-fopenmp' '-v' '-std=c++11' '-fPIE' '-o' 'CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-pthread'
+         /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/cc1plus -quiet -v -D_GNU_SOURCE -D_REENTRANT /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-YmbwN8/OpenMPTryFlag.cpp -quiet -dumpbase OpenMPTryFlag.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o -std=c++11 -version -fdiagnostics-color=always -fopenmp -fPIE -o /tmpdata/cc2Q0i0E.s
+        GNU C++11 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)
+        	compiled by GNU C version 9.2.0, GMP version 6.1.2, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"
+        ignoring nonexistent directory "/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../x86_64-pc-linux-gnu/include"
+        ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//binutils/2.33.1/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//isl/0.22/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//mpc/1.1.0/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//mpfr/4.0.2/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/share/apps/NYUAD5//gmp/6.1.2/include"
+          as it is a non-system directory that duplicates a system directory
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /share/apps/NYUAD5/gcc/9.2.0/include
+         /share/apps/NYUAD5//binutils/2.33.1/include
+         /share/apps/NYUAD5//isl/0.22/include
+         /share/apps/NYUAD5//mpc/1.1.0/include
+         /share/apps/NYUAD5//mpfr/4.0.2/include
+         /share/apps/NYUAD5//gmp/6.1.2/include
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include
+         /usr/local/include
+         /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed
+         /usr/include
+        End of search list.
+        GNU C++11 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)
+        	compiled by GNU C version 9.2.0, GMP version 6.1.2, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        Compiler executable checksum: 58570e80e2c673e7e142ee7eb14372ba
+        COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-fopenmp' '-v' '-std=c++11' '-fPIE' '-o' 'CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-pthread'
+         as -v --64 -o CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o /tmpdata/cc2Q0i0E.s
+        GNU assembler version 2.33.1 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.33.1
+        COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/
+        LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-fopenmp' '-v' '-std=c++11' '-fPIE' '-o' 'CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-pthread'
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/c++ -fdiagnostics-color=always -fopenmp -v  CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o -o cmTC_331c5  -v && :
+        Using built-in specs.
+        COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/c++
+        COLLECT_LTO_WRAPPER=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper
+        Target: x86_64-pc-linux-gnu
+        Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib
+        Thread model: posix
+        gcc version 9.2.0 (GCC) 
+        COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/
+        LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/
+        Reading specs from /share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/libgomp.spec
+        COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-fopenmp' '-v' '-o' 'cmTC_331c5' '-v' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-pthread'
+         /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/collect2 -plugin /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/liblto_plugin.so -plugin-opt=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper -plugin-opt=-fresolution=/tmpdata/ccOlAECH.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_331c5 /lib/../lib64/crt1.o /lib/../lib64/crti.o /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o -L/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib64 -L/share/apps/NYUAD5//binutils/2.33.1/lib -L/share/apps/NYUAD5//isl/0.22/lib -L/share/apps/NYUAD5//mpc/1.1.0/lib -L/share/apps/NYUAD5//mpfr/4.0.2/lib -L/share/apps/NYUAD5//gmp/6.1.2/lib -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../.. CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o -lstdc++ -lm -lgomp -lgcc_s -lgcc -lpthread -lc -lgcc_s -lgcc /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o /lib/../lib64/crtn.o
+        COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-fopenmp' '-v' '-o' 'cmTC_331c5' '-v' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-pthread'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindOpenMP.cmake:262 (message)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindOpenMP.cmake:483 (_OPENMP_GET_FLAGS)"
+      - "third_party/xgboost/CMakeLists.txt:261 (find_package)"
+    message: |
+      Parsed CXX OpenMP implicit link information from above output:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-YmbwN8']
+        ignore line: []
+        ignore line: [Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_331c5]
+        ignore line: [[1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/c++   -fdiagnostics-color=always -fopenmp -v -std=c++11 -fPIE -o CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-YmbwN8/OpenMPTryFlag.cpp]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/c++]
+        ignore line: [Target: x86_64-pc-linux-gnu]
+        ignore line: [Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib]
+        ignore line: [Thread model: posix]
+        ignore line: [gcc version 9.2.0 (GCC) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-fopenmp' '-v' '-std=c++11' '-fPIE' '-o' 'CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-pthread']
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/cc1plus -quiet -v -D_GNU_SOURCE -D_REENTRANT /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-YmbwN8/OpenMPTryFlag.cpp -quiet -dumpbase OpenMPTryFlag.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o -std=c++11 -version -fdiagnostics-color=always -fopenmp -fPIE -o /tmpdata/cc2Q0i0E.s]
+        ignore line: [GNU C++11 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)]
+        ignore line: [	compiled by GNU C version 9.2.0  GMP version 6.1.2  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"]
+        ignore line: [ignoring nonexistent directory "/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../x86_64-pc-linux-gnu/include"]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5/gcc/9.2.0/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//binutils/2.33.1/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//isl/0.22/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//mpc/1.1.0/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//mpfr/4.0.2/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/share/apps/NYUAD5//gmp/6.1.2/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/include]
+        ignore line: [ /share/apps/NYUAD5//binutils/2.33.1/include]
+        ignore line: [ /share/apps/NYUAD5//isl/0.22/include]
+        ignore line: [ /share/apps/NYUAD5//mpc/1.1.0/include]
+        ignore line: [ /share/apps/NYUAD5//mpfr/4.0.2/include]
+        ignore line: [ /share/apps/NYUAD5//gmp/6.1.2/include]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/x86_64-pc-linux-gnu]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../include/c++/9.2.0/backward]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include]
+        ignore line: [ /usr/local/include]
+        ignore line: [ /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include-fixed]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [GNU C++11 (GCC) version 9.2.0 (x86_64-pc-linux-gnu)]
+        ignore line: [	compiled by GNU C version 9.2.0  GMP version 6.1.2  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [Compiler executable checksum: 58570e80e2c673e7e142ee7eb14372ba]
+        ignore line: [COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-fopenmp' '-v' '-std=c++11' '-fPIE' '-o' 'CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-pthread']
+        ignore line: [ as -v --64 -o CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o /tmpdata/cc2Q0i0E.s]
+        ignore line: [GNU assembler version 2.33.1 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.33.1]
+        ignore line: [COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-fopenmp' '-v' '-std=c++11' '-fPIE' '-o' 'CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-pthread']
+        ignore line: [[2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/c++ -fdiagnostics-color=always -fopenmp -v  CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o -o cmTC_331c5  -v && :]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/share/apps/NYUAD5/gcc/9.2.0/bin/c++]
+        ignore line: [COLLECT_LTO_WRAPPER=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper]
+        ignore line: [Target: x86_64-pc-linux-gnu]
+        ignore line: [Configured with: ../gcc-9.2.0/configure --prefix=/share/apps/NYUAD5/gcc/9.2.0 --with-gmp=/share/apps/NYUAD5/gmp/6.1.2 --with-mpfr=/share/apps/NYUAD5/mpfr/4.0.2 --with-mpc=/share/apps/NYUAD5/mpc/1.1.0 --with-isl=/share/apps/NYUAD5/isl/0.22 --enable-shared --enable-host-shared --enable-threads --disable-multilib]
+        ignore line: [Thread model: posix]
+        ignore line: [gcc version 9.2.0 (GCC) ]
+        ignore line: [COMPILER_PATH=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/]
+        ignore line: [LIBRARY_PATH=/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/:/share/apps/NYUAD5/gcc/9.2.0/lib64/:/share/apps/NYUAD5//binutils/2.33.1/lib/:/share/apps/NYUAD5//isl/0.22/lib/:/share/apps/NYUAD5//mpc/1.1.0/lib/:/share/apps/NYUAD5//mpfr/4.0.2/lib/:/share/apps/NYUAD5//gmp/6.1.2/lib/:/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../:/lib/:/usr/lib/]
+        ignore line: [Reading specs from /share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64/libgomp.spec]
+        ignore line: [COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-fopenmp' '-v' '-o' 'cmTC_331c5' '-v' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-pthread']
+        link line: [ /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/collect2 -plugin /share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/liblto_plugin.so -plugin-opt=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper -plugin-opt=-fresolution=/tmpdata/ccOlAECH.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_331c5 /lib/../lib64/crt1.o /lib/../lib64/crti.o /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtbegin.o -L/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0 -L/share/apps/NYUAD5/gcc/9.2.0/lib64 -L/share/apps/NYUAD5//binutils/2.33.1/lib -L/share/apps/NYUAD5//isl/0.22/lib -L/share/apps/NYUAD5//mpc/1.1.0/lib -L/share/apps/NYUAD5//mpfr/4.0.2/lib -L/share/apps/NYUAD5//gmp/6.1.2/lib -L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../.. CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o -lstdc++ -lm -lgomp -lgcc_s -lgcc -lpthread -lc -lgcc_s -lgcc /share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/crtend.o /lib/../lib64/crtn.o]
+          arg [/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/share/apps/NYUAD5/gcc/9.2.0/libexec/gcc/x86_64-pc-linux-gnu/9.2.0/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmpdata/ccOlAECH.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lpthread] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_331c5] ==> ignore
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64]
+          arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+          arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib64] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+          arg [-L/share/apps/NYUAD5//binutils/2.33.1/lib] ==> dir [/share/apps/NYUAD5//binutils/2.33.1/lib]
+          arg [-L/share/apps/NYUAD5//isl/0.22/lib] ==> dir [/share/apps/NYUAD5//isl/0.22/lib]
+          arg [-L/share/apps/NYUAD5//mpc/1.1.0/lib] ==> dir [/share/apps/NYUAD5//mpc/1.1.0/lib]
+          arg [-L/share/apps/NYUAD5//mpfr/4.0.2/lib] ==> dir [/share/apps/NYUAD5//mpfr/4.0.2/lib]
+          arg [-L/share/apps/NYUAD5//gmp/6.1.2/lib] ==> dir [/share/apps/NYUAD5//gmp/6.1.2/lib]
+          arg [-L/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../..] ==> dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../..]
+          arg [CMakeFiles/cmTC_331c5.dir/OpenMPTryFlag.cpp.o] ==> ignore
+          arg [-lstdc++] ==> lib [stdc++]
+          arg [-lm] ==> lib [m]
+          arg [-lgomp] ==> lib [gomp]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lpthread] ==> lib [pthread]
+          arg [-lc] ==> lib [c]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib64/../lib64] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../../../lib64] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+        collapse library dir [/lib/../lib64] ==> [/lib64]
+        collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib64] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib64]
+        collapse library dir [/share/apps/NYUAD5//binutils/2.33.1/lib] ==> [/share/apps/NYUAD5/binutils/2.33.1/lib]
+        collapse library dir [/share/apps/NYUAD5//isl/0.22/lib] ==> [/share/apps/NYUAD5/isl/0.22/lib]
+        collapse library dir [/share/apps/NYUAD5//mpc/1.1.0/lib] ==> [/share/apps/NYUAD5/mpc/1.1.0/lib]
+        collapse library dir [/share/apps/NYUAD5//mpfr/4.0.2/lib] ==> [/share/apps/NYUAD5/mpfr/4.0.2/lib]
+        collapse library dir [/share/apps/NYUAD5//gmp/6.1.2/lib] ==> [/share/apps/NYUAD5/gmp/6.1.2/lib]
+        collapse library dir [/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0/../../..] ==> [/share/apps/NYUAD5/gcc/9.2.0/lib]
+        implicit libs: [stdc++;m;gomp;gcc_s;gcc;pthread;c;gcc_s;gcc]
+        implicit objs: []
+        implicit dirs: [/share/apps/NYUAD5/gcc/9.2.0/lib64;/share/apps/NYUAD5/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0;/lib64;/usr/lib64;/share/apps/NYUAD5/binutils/2.33.1/lib;/share/apps/NYUAD5/isl/0.22/lib;/share/apps/NYUAD5/mpc/1.1.0/lib;/share/apps/NYUAD5/mpfr/4.0.2/lib;/share/apps/NYUAD5/gmp/6.1.2/lib;/share/apps/NYUAD5/gcc/9.2.0/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindOpenMP.cmake:419 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindOpenMP.cmake:557 (_OPENMP_GET_SPEC_DATE)"
+      - "third_party/xgboost/CMakeLists.txt:261 (find_package)"
+    description: "Detecting C OpenMP version"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-4K3key"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-4K3key"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g -g -O0 -DDEBUG -Wall    -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -Wunused -Werror=vla -Wnarrowing -pedantic"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/scratch/ao2395/results/duckdb_rl/third_party/xgboost/cmake/modules"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "OpenMP_SPECTEST_C_"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-4K3key'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_53bc1
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/cc   -fopenmp -fPIE -o CMakeFiles/cmTC_53bc1.dir/OpenMPCheckVersion.c.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-4K3key/OpenMPCheckVersion.c
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/cc -fopenmp  CMakeFiles/cmTC_53bc1.dir/OpenMPCheckVersion.c.o -o cmTC_53bc1   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindOpenMP.cmake:419 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindOpenMP.cmake:557 (_OPENMP_GET_SPEC_DATE)"
+      - "third_party/xgboost/CMakeLists.txt:261 (find_package)"
+    description: "Detecting CXX OpenMP version"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-Sju55X"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-Sju55X"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: " -fdiagnostics-color=always"
+      CMAKE_CXX_FLAGS_DEBUG: "-g -g -O0 -DDEBUG -Wall    -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -Wunused -Werror=vla -Wnarrowing -pedantic"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/scratch/ao2395/results/duckdb_rl/third_party/xgboost/cmake/modules"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "OpenMP_SPECTEST_CXX_"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-Sju55X'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_5c8d6
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/c++   -fdiagnostics-color=always -fopenmp -std=c++11 -fPIE -o CMakeFiles/cmTC_5c8d6.dir/OpenMPCheckVersion.cpp.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-Sju55X/OpenMPCheckVersion.cpp
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/c++ -fdiagnostics-color=always -fopenmp  CMakeFiles/cmTC_5c8d6.dir/OpenMPCheckVersion.cpp.o -o cmTC_5c8d6   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckLibraryExists.cmake:69 (try_compile)"
+      - "third_party/xgboost/dmlc-core/CMakeLists.txt:142 (CHECK_LIBRARY_EXISTS)"
+    checks:
+      - "Looking for clock_gettime in rt"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ADzOyo"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ADzOyo"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g -g -O0 -DDEBUG -Wall    -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -Wunused -Werror=vla -Wnarrowing -pedantic"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/scratch/ao2395/results/duckdb_rl/third_party/xgboost/cmake/modules;/scratch/ao2395/results/duckdb_rl/third_party/xgboost/dmlc-core/cmake/Modules"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_CLOCK_GETTIME_IN_LIBRT"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ADzOyo'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_36e28
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/cc   -DCHECK_FUNCTION_EXISTS=clock_gettime -fPIE -o CMakeFiles/cmTC_36e28.dir/CheckFunctionExists.c.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ADzOyo/CheckFunctionExists.c
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/cc -DCHECK_FUNCTION_EXISTS=clock_gettime  CMakeFiles/cmTC_36e28.dir/CheckFunctionExists.c.o -o cmTC_36e28 -L/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ADzOyo/time.h -Wl,-rpath,/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ADzOyo/time.h  -lrt && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "third_party/xgboost/dmlc-core/CMakeLists.txt:151 (check_symbol_exists)"
+    checks:
+      - "Looking for fopen64"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-gGa0rP"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-gGa0rP"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g -g -O0 -DDEBUG -Wall    -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -Wunused -Werror=vla -Wnarrowing -pedantic"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/scratch/ao2395/results/duckdb_rl/third_party/xgboost/cmake/modules;/scratch/ao2395/results/duckdb_rl/third_party/xgboost/dmlc-core/cmake/Modules"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "DMLC_FOPEN_64_PRESENT"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-gGa0rP'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_bf603
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/cc   -fPIE -o CMakeFiles/cmTC_bf603.dir/CheckSymbolExists.c.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-gGa0rP/CheckSymbolExists.c
+        FAILED: CMakeFiles/cmTC_bf603.dir/CheckSymbolExists.c.o 
+        /share/apps/NYUAD5/gcc/9.2.0/bin/cc   -fPIE -o CMakeFiles/cmTC_bf603.dir/CheckSymbolExists.c.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-gGa0rP/CheckSymbolExists.c
+        /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-gGa0rP/CheckSymbolExists.c: In function ‘main’:
+        /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-gGa0rP/CheckSymbolExists.c:8:19: error: ‘fopen64’ undeclared (first use in this function); did you mean ‘fopen’?
+            8 |   return ((int*)(&fopen64))[argc];
+              |                   ^~~~~~~
+              |                   fopen
+        /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-gGa0rP/CheckSymbolExists.c:8:19: note: each undeclared identifier is reported only once for each function it appears in
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckIncludeFileCXX.cmake:89 (try_compile)"
+      - "third_party/xgboost/dmlc-core/CMakeLists.txt:152 (check_include_file_cxx)"
+    checks:
+      - "Looking for C++ include cxxabi.h"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-miOTCg"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-miOTCg"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: " -fdiagnostics-color=always"
+      CMAKE_CXX_FLAGS_DEBUG: "-g -g -O0 -DDEBUG -Wall    -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -Wunused -Werror=vla -Wnarrowing -pedantic"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/scratch/ao2395/results/duckdb_rl/third_party/xgboost/cmake/modules;/scratch/ao2395/results/duckdb_rl/third_party/xgboost/dmlc-core/cmake/Modules"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "DMLC_CXXABI_H_PRESENT"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-miOTCg'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_066a8
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/c++   -fdiagnostics-color=always  -std=c++11 -fPIE -o CMakeFiles/cmTC_066a8.dir/CheckIncludeFile.cxx.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-miOTCg/CheckIncludeFile.cxx
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/c++ -fdiagnostics-color=always  CMakeFiles/cmTC_066a8.dir/CheckIncludeFile.cxx.o -o cmTC_066a8   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "third_party/xgboost/dmlc-core/CMakeLists.txt:153 (check_symbol_exists)"
+    checks:
+      - "Looking for nanosleep"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-mR6skI"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-mR6skI"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g -g -O0 -DDEBUG -Wall    -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -Wunused -Werror=vla -Wnarrowing -pedantic"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/scratch/ao2395/results/duckdb_rl/third_party/xgboost/cmake/modules;/scratch/ao2395/results/duckdb_rl/third_party/xgboost/dmlc-core/cmake/Modules"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "DMLC_NANOSLEEP_PRESENT"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-mR6skI'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_54e4f
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/cc   -fPIE -o CMakeFiles/cmTC_54e4f.dir/CheckSymbolExists.c.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-mR6skI/CheckSymbolExists.c
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/cc   CMakeFiles/cmTC_54e4f.dir/CheckSymbolExists.c.o -o cmTC_54e4f   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/FindBacktrace.cmake:62 (check_symbol_exists)"
+      - "third_party/xgboost/dmlc-core/CMakeLists.txt:156 (find_package)"
+    checks:
+      - "Looking for backtrace"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-YrCZra"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-YrCZra"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g -g -O0 -DDEBUG -Wall    -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -Wunused -Werror=vla -Wnarrowing -pedantic"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/scratch/ao2395/results/duckdb_rl/third_party/xgboost/cmake/modules;/scratch/ao2395/results/duckdb_rl/third_party/xgboost/dmlc-core/cmake/Modules"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "_Backtrace_SYM_FOUND"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-YrCZra'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_b3b6c
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/cc   -fPIE -o CMakeFiles/cmTC_b3b6c.dir/CheckSymbolExists.c.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-YrCZra/CheckSymbolExists.c
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/cc   CMakeFiles/cmTC_b3b6c.dir/CheckSymbolExists.c.o -o cmTC_b3b6c   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/share/apps/NYUAD5/miniconda/3-4.11.0/lib/python3.9/site-packages/cmake/data/share/cmake-3.27/Modules/CheckCXXCompilerFlag.cmake:34 (cmake_check_compiler_flag)"
+      - "third_party/xgboost/dmlc-core/CMakeLists.txt:202 (check_cxx_compiler_flag)"
+    checks:
+      - "Performing Test SUPPORT_MSSE2"
+    directories:
+      source: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ypDzZC"
+      binary: "/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ypDzZC"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: " -fdiagnostics-color=always"
+      CMAKE_CXX_FLAGS_DEBUG: "-g -g -O0 -DDEBUG -Wall    -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -Wunused -Werror=vla -Wnarrowing -pedantic"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/scratch/ao2395/results/duckdb_rl/third_party/xgboost/cmake/modules;/scratch/ao2395/results/duckdb_rl/third_party/xgboost/dmlc-core/cmake/Modules"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "SUPPORT_MSSE2"
+      cached: true
+      stdout: |
+        Change Dir: '/scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ypDzZC'
+        
+        Run Build Command(s): /share/apps/NYUAD5/miniconda/3-4.11.0/bin/ninja -v cmTC_18920
+        [1/2] /share/apps/NYUAD5/gcc/9.2.0/bin/c++ -DSUPPORT_MSSE2  -fdiagnostics-color=always  -std=c++11 -fPIE   -msse2 -o CMakeFiles/cmTC_18920.dir/src.cxx.o -c /scratch/ao2395/results/duckdb_rl/build/release/CMakeFiles/CMakeScratch/TryCompile-ypDzZC/src.cxx
+        [2/2] : && /share/apps/NYUAD5/gcc/9.2.0/bin/c++ -fdiagnostics-color=always  CMakeFiles/cmTC_18920.dir/src.cxx.o -o cmTC_18920   && :
+        
+      exitCode: 0
+...

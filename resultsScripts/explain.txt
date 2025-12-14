@@ -1,0 +1,62 @@
+
+┌─────────────────────────────┐
+│┌───────────────────────────┐│
+││       Physical Plan       ││
+│└───────────────────────────┘│
+└─────────────────────────────┘
+┌───────────────────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│       promo_revenue       │
+│                           │
+│           ~1 row          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│    UNGROUPED_AGGREGATE    │
+│    ────────────────────   │
+│        Aggregates:        │
+│          sum(#0)          │
+│          sum(#1)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│ CASE  WHEN (prefix(p_type,│
+│      'PROMO')) THEN (     │
+│ (l_extendedprice * (1.00 -│
+│  l_discount))) ELSE 0.0000│
+│             END           │
+│ (l_extendedprice * (1.00 -│
+│        l_discount))       │
+│                           │
+│      ~6,042,595 rows      │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         HASH_JOIN         │
+│    ────────────────────   │
+│      Join Type: INNER     │
+│                           │
+│        Conditions:        ├──────────────┐
+│   l_partkey = p_partkey   │              │
+│                           │              │
+│      ~6,042,595 rows      │              │
+└─────────────┬─────────────┘              │
+┌─────────────┴─────────────┐┌─────────────┴─────────────┐
+│         SEQ_SCAN          ││         SEQ_SCAN          │
+│    ────────────────────   ││    ────────────────────   │
+│      Table: lineitem      ││        Table: part        │
+│   Type: Sequential Scan   ││   Type: Sequential Scan   │
+│                           ││                           │
+│        Projections:       ││        Projections:       │
+│         l_partkey         ││         p_partkey         │
+│      l_extendedprice      ││           p_type          │
+│         l_discount        ││                           │
+│                           ││                           │
+│          Filters:         ││                           │
+│ l_shipdate>='1993-10-01': ││                           │
+│ :DATE AND (CAST(l_shipdate││                           │
+│  AS TIMESTAMP) < '1993-11 ││                           │
+│ -01 00:00:00'::TIMESTAMP) ││                           │
+│                           ││                           │
+│      ~5,999,959 rows      ││      ~1,000,000 rows      │
+└───────────────────────────┘└───────────────────────────┘

@@ -7,6 +7,7 @@
 
 #include "duckdb/main/rl_training_buffer.hpp"
 #include "duckdb/common/printer.hpp"
+#include "duckdb/main/rl_boosting_model.hpp"
 #include <chrono>
 #include <algorithm>
 
@@ -14,7 +15,7 @@ namespace duckdb {
 
 RLTrainingBuffer::RLTrainingBuffer(idx_t max_size)
     : max_size(max_size), running_q_error_sum(0.0), sample_count(0) {
-	Printer::Print("[RL TRAINING BUFFER] Initialized with capacity: " + std::to_string(max_size) + "\n");
+	// Printer::Print("[RL TRAINING BUFFER] Initialized with capacity: " + std::to_string(max_size) + "\n");
 }
 
 RLTrainingBuffer::~RLTrainingBuffer() {
@@ -24,8 +25,12 @@ void RLTrainingBuffer::AddSample(const vector<double> &features, idx_t actual_ca
                                    idx_t predicted_cardinality) {
 	lock_guard<mutex> lock(buffer_lock);
 
+	// Normalize feature length to match the current model input size (defensive against version mismatches)
+	vector<double> normalized = features;
+	normalized.resize(RLBoostingModel::FEATURE_VECTOR_SIZE, 0.0);
+
 	// Create training sample
-	RLTrainingSample sample(features, actual_cardinality, predicted_cardinality);
+	RLTrainingSample sample(std::move(normalized), actual_cardinality, predicted_cardinality);
 
 	// Add timestamp
 	auto now = std::chrono::system_clock::now();
@@ -68,6 +73,27 @@ vector<RLTrainingSample> RLTrainingBuffer::GetBatch(idx_t batch_size) {
 	}
 
 	return batch;
+}
+
+vector<RLTrainingSample> RLTrainingBuffer::GetRecentSamples(idx_t count) {
+	lock_guard<mutex> lock(buffer_lock);
+
+	if (buffer.empty()) {
+		return {};
+	}
+
+	// Determine how many samples to return (min of requested and available)
+	idx_t actual_count = MinValue<idx_t>(count, buffer.size());
+
+	vector<RLTrainingSample> samples;
+	samples.reserve(actual_count);
+
+	// Get the most recent samples (from the end of the deque)
+	for (idx_t i = buffer.size() - actual_count; i < buffer.size(); i++) {
+		samples.push_back(buffer[i]);
+	}
+
+	return samples;
 }
 
 idx_t RLTrainingBuffer::Size() const {

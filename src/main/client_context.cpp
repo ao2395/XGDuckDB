@@ -53,6 +53,7 @@
 #include "duckdb/main/settings.hpp"
 #include "duckdb/main/rl_model_interface.hpp"
 #include "duckdb/main/rl_training_buffer.hpp"
+#include "duckdb/optimizer/rl_feature_collector.hpp"
 
 namespace duckdb {
 
@@ -156,6 +157,7 @@ ClientContext::ClientContext(shared_ptr<DatabaseInstance> database)
 	LoggingContext context(LogContextScope::CONNECTION);
 	logger = db->GetLogManager().CreateLogger(context, true);
 	client_data = make_uniq<ClientData>(*this);
+	rl_model = make_uniq<RLModelInterface>(*this);
 }
 
 ClientContext::~ClientContext() {
@@ -210,6 +212,11 @@ void ClientContext::BeginQueryInternal(ClientContextLock &lock, const string &qu
 	}
 
 	transaction.SetActiveQuery(db->GetDatabaseManager().GetNewQueryNumber());
+	// Reset RL prediction caches at query boundaries to avoid cache growth in long-running sessions
+	// (planning can run outside of a stable transaction query id).
+	if (rl_model) {
+		RLModelInterface::ResetPredictionCachesForThread();
+	}
 	LogQueryInternal(lock, query);
 	active_query->query = query;
 
@@ -285,6 +292,11 @@ ErrorData ClientContext::EndQueryInternal(ClientContextLock &lock, bool success,
 }
 
 void ClientContext::CleanupInternal(ClientContextLock &lock, BaseQueryResult *result, bool invalidate_transaction) {
+	// CRITICAL: ALWAYS clear the feature collector at the START of cleanup
+	// This prevents memory leaks from the singleton accumulating features across queries
+	// Must be done BEFORE the early return so it runs even when no active query
+	RLFeatureCollector::Get().Clear();
+
 	if (!active_query) {
 		// no query currently active
 		return;
@@ -347,8 +359,9 @@ unique_ptr<QueryResult> ClientContext::FetchResultInternal(ClientContextLock &lo
 	if (physical_plan && profiler) {
 		try {
 			auto &training_buffer = db->GetRLTrainingBuffer();
-			RLModelInterface rl_interface(*this);
-			rl_interface.CollectActualCardinalities(*physical_plan, *profiler, training_buffer);
+			if (rl_model) {
+				rl_model->CollectActualCardinalities(*physical_plan, *profiler, training_buffer);
+			}
 		} catch (...) {
 			// Silently ignore errors in RL training collection
 		}

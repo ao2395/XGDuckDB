@@ -6,6 +6,8 @@ namespace duckdb {
 
 CostModel::CostModel(QueryGraphManager &query_graph_manager)
     : query_graph_manager(query_graph_manager), cardinality_estimator() {
+	// Allow join-order DP to use RL predictions (cached) via the cardinality estimator
+	cardinality_estimator.SetClientContext(query_graph_manager.context);
 }
 
 double CostModel::ComputeCost(DPJoinNode &left, DPJoinNode &right) {

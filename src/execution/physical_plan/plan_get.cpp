@@ -36,14 +36,14 @@ unique_ptr<TableFilterSet> CreateTableFilterSet(TableFilterSet &table_filters, c
 }
 
 PhysicalOperator &PhysicalPlanGenerator::CreatePlan(LogicalGet &op) {
-	// RL MODEL INFERENCE: Extract features and get estimate (GET is a leaf node, so this is always bottom-up)
+	// RL MODEL INFERENCE (observe-only): Extract features and compute a prediction for Q-error/training.
+	// IMPORTANT: Do NOT override `op.estimated_cardinality` - planning must not depend on RL estimates.
 	RLModelInterface rl_model(context);
 	auto features = rl_model.ExtractFeatures(op, context);
-	auto rl_estimate = rl_model.GetCardinalityEstimate(features);
-	idx_t original_duckdb_estimate = op.estimated_cardinality;  // For debugging/comparison only
-	if (rl_estimate > 0) {
-		op.estimated_cardinality = rl_estimate;
-	}
+	const idx_t original_duckdb_estimate =
+	    op.has_duckdb_estimated_cardinality ? op.duckdb_estimated_cardinality : op.estimated_cardinality;
+	const idx_t rl_raw_prediction = rl_model.PredictCardinality(features);
+	const idx_t rl_prediction = rl_raw_prediction > 0 ? rl_raw_prediction : original_duckdb_estimate;
 
 	auto column_ids = op.GetColumnIds();
 	if (!op.children.empty()) {
@@ -157,9 +157,7 @@ PhysicalOperator &PhysicalPlanGenerator::CreatePlan(LogicalGet &op) {
 		    std::move(op.parameters), std::move(op.virtual_columns));
 
 		// Attach RL state to track prediction for training
-		if (rl_estimate > 0) {
-			rl_model.AttachRLState(table_scan, features, rl_estimate, original_duckdb_estimate);
-		}
+		rl_model.AttachRLState(table_scan, features, rl_prediction, original_duckdb_estimate);
 
 		// first check if an additional projection is necessary
 		if (column_ids.size() == op.returned_types.size()) {
@@ -211,9 +209,7 @@ PhysicalOperator &PhysicalPlanGenerator::CreatePlan(LogicalGet &op) {
 	cast_table_scan.dynamic_filters = op.dynamic_filters;
 
 	// Attach RL state to track prediction for training
-	if (rl_estimate > 0) {
-		rl_model.AttachRLState(table_scan, features, rl_estimate, original_duckdb_estimate);
-	}
+	rl_model.AttachRLState(table_scan, features, rl_prediction, original_duckdb_estimate);
 
 	if (filter) {
 		filter->children.push_back(table_scan);

@@ -47,11 +47,18 @@ add_library_unity(
   query_result.cpp
   rl_feature_tracker.cpp
   rl_model_interface.cpp
-  rl_cardinality_model.cpp
+  rl_boosting_model.cpp
   rl_training_buffer.cpp
   rl_training_thread.cpp
   stream_query_result.cpp
   valid_checker.cpp)
+
+# Add XGBoost include directories to duckdb_main
+target_include_directories(duckdb_main PRIVATE
+  ${PROJECT_SOURCE_DIR}/third_party/xgboost/include
+  ${PROJECT_SOURCE_DIR}/third_party/xgboost/rabit/include
+  ${PROJECT_SOURCE_DIR}/third_party/xgboost/dmlc-core/include)
+
 set(ALL_OBJECT_FILES
     ${ALL_OBJECT_FILES} $<TARGET_OBJECTS:duckdb_main>
     PARENT_SCOPE)

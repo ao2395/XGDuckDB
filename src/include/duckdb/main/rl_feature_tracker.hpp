@@ -62,6 +62,11 @@ private:
 
 	//! Mutex for thread-safe access
 	std::mutex lock;
+
+	//! Unique ID for this tracker instance (to validate thread-local cache)
+	uint64_t tracker_id;
+	//! Generation counter (incremented on Reset)
+	std::atomic<uint64_t> generation;
 };
 
 } // namespace duckdb

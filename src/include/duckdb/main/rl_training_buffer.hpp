@@ -17,7 +17,7 @@ namespace duckdb {
 
 //! Training sample for the RL model
 struct RLTrainingSample {
-	vector<double> features;           // 64-dimensional feature vector
+	vector<double> features;           // Feature vector (must match RLBoostingModel input size)
 	idx_t actual_cardinality;          // Ground truth from execution
 	idx_t predicted_cardinality;       // Model's prediction
 	double q_error;                    // Quality metric
@@ -46,6 +46,10 @@ public:
 	//! Get a batch of samples for training (called from background thread)
 	//! Returns empty vector if buffer is empty
 	vector<RLTrainingSample> GetBatch(idx_t batch_size);
+
+	//! Get the most recent N samples from the buffer (for sliding window training)
+	//! Returns fewer than count if buffer has fewer samples
+	vector<RLTrainingSample> GetRecentSamples(idx_t count);
 
 	//! Get buffer statistics
 	idx_t Size() const;

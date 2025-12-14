@@ -11,7 +11,6 @@
 #include "duckdb/common/common.hpp"
 #include "duckdb/common/unordered_map.hpp"
 #include "duckdb/planner/logical_operator.hpp"
-#include "duckdb/main/rl_cardinality_model.hpp"
 
 namespace duckdb {
 
@@ -43,9 +42,21 @@ struct OperatorFeatures {
 	vector<idx_t> filter_column_ids;
 	vector<double> selectivity_ratios;
 	idx_t child_cardinality = 0;  // For FILTER operators: cardinality of child operator
+	// Filter constant/value summary (from RLFeatureCollector::FilterFeatures if available)
+	idx_t filter_constant_count = 0;
+	double filter_constant_numeric_log_mean = 0.0;
+	double filter_constant_string_log_mean = 0.0;
 
 	// Join features
 	string join_type;
+	// Join condition structure (helps distinguish single-predicate vs multi-predicate joins)
+	// These are extracted from `LogicalComparisonJoin::conditions`.
+	idx_t join_condition_count = 0;
+	idx_t join_equality_condition_count = 0;
+	// Join key identity summary (hashed type/signature of join predicates)
+	double join_key_signature_hash = 0.0; // normalized to [0,1]
+	double join_key_same_type_ratio = 0.0;
+	double join_key_simple_ref_ratio = 0.0;
 	idx_t left_cardinality = 0;
 	idx_t right_cardinality = 0;
 	idx_t tdom_value = 0;
@@ -78,8 +89,21 @@ public:
 	//! Extract features from a logical operator
 	OperatorFeatures ExtractFeatures(LogicalOperator &op, ClientContext &context);
 
-	//! Get cardinality estimate from RL model (currently just prints features)
-	//! Returns 0 if model should not override DuckDB's estimate
+	//! Get a pure RL prediction (observe-only).
+	//! Returns 0 if a prediction is not available.
+	idx_t PredictCardinality(const OperatorFeatures &features);
+
+	//! Get an RL prediction intended for planning/optimization (can be called from the optimizer).
+	//! This uses a separate cache/cap from physical-plan prediction to avoid interference.
+	//! Returns 0 if a prediction is not available.
+	idx_t PredictPlanningCardinality(const OperatorFeatures &features);
+
+	//! Reset per-thread prediction caches for the current connection.
+	//! Call this at query boundaries to avoid cache growth across long sessions.
+	static void ResetPredictionCachesForThread();
+
+	//! Planning cardinality estimate to use for optimizer/execution decisions.
+	//! If RL prediction is available, it is used; otherwise falls back to DuckDB's estimate.
 	idx_t GetCardinalityEstimate(const OperatorFeatures &features);
 
 	//! Create RL state and attach to physical operator
@@ -89,7 +113,7 @@ public:
 
 	//! Convert features to numerical vector for ML model input
 	//! Returns a fixed-size vector of doubles suitable for feeding to an ML model
-	vector<double> FeaturesToVector(const OperatorFeatures &features);
+	static vector<double> FeaturesToVector(const OperatorFeatures &features);
 
 	//! Train the model with actual cardinality (to be implemented later)
 	void TrainModel(const OperatorFeatures &features, idx_t actual_cardinality);
@@ -109,13 +133,13 @@ private:
 
 	// Feature vector size:
 	// - Operator type (10 one-hot)
-	// - Table scan features (8)
-	// - Join features (21)
+	// - Table scan features (24)
+	// - Join features (27) - expanded with 6 selectivity features
 	// - Aggregate features (4)
 	// - Filter features (2)
-	// - Context features (1)
-	// Total: 46, rounded to 64 for future expansion
-	static constexpr idx_t FEATURE_VECTOR_SIZE = 64;
+	// - Context+extra features (13)
+	// Total: 80
+	static constexpr idx_t FEATURE_VECTOR_SIZE = 80;
 };
 
 } // namespace duckdb

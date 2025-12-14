@@ -6,7 +6,6 @@
 //===----------------------------------------------------------------------===//
 
 #include "duckdb/main/rl_training_thread.hpp"
-#include "duckdb/main/rl_cardinality_model.hpp"
 #include "duckdb/common/printer.hpp"
 #include <chrono>
 
@@ -23,18 +22,18 @@ RLTrainingThread::~RLTrainingThread() {
 
 void RLTrainingThread::Start(const RLTrainingConfig &cfg) {
 	if (is_running) {
-		Printer::Print("[RL TRAINING THREAD] Already running\n");
+		// Printer::Print("[RL TRAINING THREAD] Already running\n");
 		return;
 	}
 
 	config = cfg;
 	should_stop = false;
 
-	Printer::Print("[RL TRAINING THREAD] Starting background training with config:\n");
-	Printer::Print("  Batch size: " + std::to_string(config.batch_size) + "\n");
-	Printer::Print("  Min buffer size: " + std::to_string(config.min_buffer_size) + "\n");
-	Printer::Print("  Training interval: " + std::to_string(config.training_interval_ms) + "ms\n");
-	Printer::Print("  Max iterations per cycle: " + std::to_string(config.max_iterations_per_cycle) + "\n");
+	// Printer::Print("[RL TRAINING THREAD] Starting background training with config:\n");
+	// Printer::Print("  Batch size: " + std::to_string(config.batch_size) + "\n");
+	// Printer::Print("  Min buffer size: " + std::to_string(config.min_buffer_size) + "\n");
+	// Printer::Print("  Training interval: " + std::to_string(config.training_interval_ms) + "ms\n");
+	// Printer::Print("  Max iterations per cycle: " + std::to_string(config.max_iterations_per_cycle) + "\n");
 
 	// Start background thread
 	training_thread = std::thread(&RLTrainingThread::TrainingLoop, this);
@@ -46,7 +45,7 @@ void RLTrainingThread::Stop() {
 		return;
 	}
 
-	Printer::Print("[RL TRAINING THREAD] Stopping background training...\n");
+	// Printer::Print("[RL TRAINING THREAD] Stopping background training...\n");
 	should_stop = true;
 	training_cv.notify_all();
 
@@ -55,7 +54,7 @@ void RLTrainingThread::Stop() {
 	}
 
 	is_running = false;
-	Printer::Print("[RL TRAINING THREAD] Stopped. Total updates: " + std::to_string(total_updates.load()) + "\n");
+	// Printer::Print("[RL TRAINING THREAD] Stopped. Total updates: " + std::to_string(total_updates.load()) + "\n");
 }
 
 bool RLTrainingThread::IsRunning() const {
@@ -75,7 +74,7 @@ double RLTrainingThread::GetAverageTrainingLoss() const {
 }
 
 void RLTrainingThread::TrainingLoop() {
-	Printer::Print("[RL TRAINING THREAD] Training loop started\n");
+	// Printer::Print("[RL TRAINING THREAD] Training loop started\n");
 
 	while (!should_stop) {
 		// Wait for training interval or until stopped
@@ -96,45 +95,14 @@ void RLTrainingThread::TrainingLoop() {
 		TrainBatch();
 	}
 
-	Printer::Print("[RL TRAINING THREAD] Training loop exiting\n");
+	// Printer::Print("[RL TRAINING THREAD] Training loop exiting\n");
 }
 
 void RLTrainingThread::TrainBatch() {
-	// Get a batch of samples from the buffer
-	auto batch = buffer.GetBatch(config.batch_size);
-
-	if (batch.empty()) {
-		return;
-	}
-
-	double total_loss = 0.0;
-
-	// Perform multiple gradient updates on this batch
-	for (idx_t iteration = 0; iteration < config.max_iterations_per_cycle; iteration++) {
-		for (const auto &sample : batch) {
-			// Update model with this sample
-			model.Update(sample.features, sample.actual_cardinality, sample.predicted_cardinality);
-
-			// Track loss (Q-error)
-			total_loss += sample.q_error;
-		}
-
-		total_updates += batch.size();
-	}
-
-	// Update statistics
-	double avg_loss = total_loss / (batch.size() * config.max_iterations_per_cycle);
-	// Atomics don't support +=, so use fetch_add or store with load
-	running_loss_sum.store(running_loss_sum.load() + avg_loss);
-	loss_count++;
-
-	// Log training progress periodically
-	if (total_updates % 1000 == 0) {
-		Printer::Print("[RL TRAINING THREAD] Updates: " + std::to_string(total_updates.load()) +
-		               ", Avg Loss: " + std::to_string(GetAverageTrainingLoss()) +
-		               ", Buffer Size: " + std::to_string(buffer.Size()) +
-		               ", Avg Buffer Q-error: " + std::to_string(buffer.AverageQError()) + "\n");
-	}
+	// NOTE: Background training is disabled - using synchronous XGBoost training instead
+	// This method is not called since rl_training_thread is set to nullptr in database.cpp
+	// The old MLP training code has been removed
+	return;
 }
 
 } // namespace duckdb

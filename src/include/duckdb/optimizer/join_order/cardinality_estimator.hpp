@@ -8,6 +8,7 @@
 #pragma once
 
 #include "duckdb/planner/column_binding_map.hpp"
+#include "duckdb/common/optional_ptr.hpp"
 #include "duckdb/optimizer/join_order/query_graph.hpp"
 
 #include "duckdb/optimizer/join_order/relation_statistics_helper.hpp"
@@ -15,6 +16,7 @@
 namespace duckdb {
 
 class FilterInfo;
+class ClientContext;
 
 struct DenomInfo {
 	DenomInfo(JoinRelationSet &numerator_relations, double filter_strength, double denominator)
@@ -95,13 +97,19 @@ private:
 	unordered_map<string, CardinalityHelper> relation_set_2_cardinality;
 	JoinRelationSetManager set_manager;
 	vector<RelationStats> relation_stats;
+	optional_ptr<ClientContext> client_context;
 
 public:
+	void SetClientContext(ClientContext &context) {
+		client_context = &context;
+	}
+
 	void RemoveEmptyTotalDomains();
 	void UpdateTotalDomains(optional_ptr<JoinRelationSet> set, RelationStats &stats);
 	void InitEquivalentRelations(const vector<unique_ptr<FilterInfo>> &filter_infos);
 
 	void InitCardinalityEstimatorProps(optional_ptr<JoinRelationSet> set, RelationStats &stats);
+	void ResetQueryPredictionCap();
 
 	//! cost model needs estimated cardinalities to the fraction since the formula captures
 	//! distinct count selectivities and multiplicities. Hence the template

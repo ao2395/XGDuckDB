@@ -28,8 +28,15 @@ void RLFeatureCollector::AddJoinFeatures(const LogicalOperator *op, const JoinFe
 
 void RLFeatureCollector::AddJoinFeaturesByRelationSet(const string &relation_set, const JoinFeatures &features) {
 	std::lock_guard<std::mutex> guard(lock);
+	
+	// Safety limit - but high enough for good cache hit rates
+	// These get cleared after each query anyway by Clear()
+	if (join_features_by_relation_set.size() > 10000) {
+		join_features_by_relation_set.clear();
+		join_features_by_estimate.clear();
+	}
+	
 	join_features_by_relation_set[relation_set] = features;
-	// Also store by estimated cardinality for lookup
 	if (features.estimated_cardinality > 0) {
 		join_features_by_estimate[(idx_t)features.estimated_cardinality] = features;
 	}
@@ -59,6 +66,8 @@ optional_ptr<JoinFeatures> RLFeatureCollector::GetJoinFeatures(const LogicalOper
 }
 
 optional_ptr<JoinFeatures> RLFeatureCollector::GetJoinFeaturesByRelationSet(const string &relation_set) {
+	// NOTE: Thread-local cache was removed - it caused memory leaks because
+	// thread_local variables persist across queries and never get cleared by Clear()
 	std::lock_guard<std::mutex> guard(lock);
 	auto it = join_features_by_relation_set.find(relation_set);
 	if (it != join_features_by_relation_set.end()) {
@@ -92,6 +101,33 @@ void RLFeatureCollector::Clear() {
 	join_features_by_relation_set.clear();
 	join_features_by_estimate.clear();
 	filter_features.clear();
+	// Also clear prediction cache to prevent memory growth between queries
+	prediction_cache.clear();
+}
+
+void RLFeatureCollector::ClearPredictionCache() {
+	std::lock_guard<std::mutex> guard(lock);
+	prediction_cache.clear();
+}
+
+void RLFeatureCollector::RegisterPredictor(PredictorCallback callback) {
+	std::lock_guard<std::mutex> guard(lock);
+	predictor = callback;
+	// Printer::Print("[RL DEBUG] Predictor registered in RLFeatureCollector\n");
+}
+
+double RLFeatureCollector::PredictCardinality(const JoinFeatures &features) {
+	// Get predictor under lock (fast - just a function pointer copy)
+	PredictorCallback local_predictor;
+	{
+		std::lock_guard<std::mutex> guard(lock);
+		local_predictor = predictor;
+	}
+
+	if (local_predictor) {
+		return local_predictor(features);
+	}
+	return 0.0;
 }
 
 } // namespace duckdb

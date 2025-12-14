@@ -43,6 +43,11 @@ public:
 	idx_t estimated_cardinality;
 	bool has_estimated_cardinality;
 
+	//! DuckDB baseline estimated cardinality (captured before any learned/override pass).
+	//! This is kept for RL training/evaluation so we can still report baseline Q-error after overrides.
+	idx_t duckdb_estimated_cardinality = 0;
+	bool has_duckdb_estimated_cardinality = false;
+
 public:
 	virtual vector<ColumnBinding> GetColumnBindings();
 	virtual idx_t GetRootIndex();

@@ -74,6 +74,13 @@ public:
 	optional_ptr<FilterFeatures> GetFilterFeatures(const LogicalOperator *op);
 
 	void Clear();
+	
+	using PredictorCallback = std::function<double(const JoinFeatures&)>;
+	void RegisterPredictor(PredictorCallback callback);
+	double PredictCardinality(const JoinFeatures &features);
+
+	// Clear the prediction cache (called after each query to prevent memory growth)
+	void ClearPredictionCache();
 
 private:
 	RLFeatureCollector() = default;
@@ -84,6 +91,11 @@ private:
 	unordered_map<idx_t, JoinFeatures> join_features_by_estimate;
 	unordered_map<const LogicalOperator*, FilterFeatures> filter_features;
 	std::mutex lock;
+
+	PredictorCallback predictor;
+
+	// Prediction cache for join cardinality estimates (cleared after each query)
+	unordered_map<string, double> prediction_cache;
 };
 
 } // namespace duckdb

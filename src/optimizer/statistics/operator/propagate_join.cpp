@@ -11,15 +11,34 @@
 #include "duckdb/planner/operator/logical_join.hpp"
 #include "duckdb/planner/operator/logical_limit.hpp"
 #include "duckdb/planner/operator/logical_positional_join.hpp"
+#include "duckdb/optimizer/rl_feature_collector.hpp"
 
 namespace duckdb {
 
 void StatisticsPropagator::PropagateStatistics(LogicalComparisonJoin &join, unique_ptr<LogicalOperator> &node_ptr) {
+	// RL FEATURE COLLECTION (for learned cardinality estimation evaluation/training)
+	// Collect lightweight join-key distinctness signals for equality joins (HASH_JOIN-heavy workloads).
+	double denom_product = 1.0;
+	idx_t eq_pred_count = 0;
+	double log_denom_sum = 0.0;
+
 	for (idx_t i = 0; i < join.conditions.size(); i++) {
 		auto &condition = join.conditions[i];
 		const auto stats_left = PropagateExpression(condition.left);
 		const auto stats_right = PropagateExpression(condition.right);
 		if (stats_left && stats_right) {
+			// For equality joins, collect distinct-count based denominator product approximation.
+			if (condition.comparison == ExpressionType::COMPARE_EQUAL ||
+			    condition.comparison == ExpressionType::COMPARE_NOT_DISTINCT_FROM) {
+				auto dl = stats_left->GetDistinctCount();
+				auto dr = stats_right->GetDistinctCount();
+				if (dl > 0 && dr > 0) {
+					double ndv = static_cast<double>(MaxValue<idx_t>(dl, dr));
+					denom_product *= ndv;
+					log_denom_sum += std::log(std::max(1.0, ndv));
+					eq_pred_count++;
+				}
+			}
 			if ((condition.comparison == ExpressionType::COMPARE_DISTINCT_FROM ||
 			     condition.comparison == ExpressionType::COMPARE_NOT_DISTINCT_FROM) &&
 			    stats_left->CanHaveNull() && stats_right->CanHaveNull()) {
@@ -174,6 +193,30 @@ void StatisticsPropagator::PropagateStatistics(LogicalComparisonJoin &join, uniq
 			break;
 		}
 	}
+
+	// Emit join features (best-effort; if inputs are missing, leave defaults)
+	JoinFeatures jf;
+	jf.join_type = JoinTypeToString(join.join_type);
+	if (join.children.size() >= 2) {
+		jf.left_relation_card = join.children[0]->estimated_cardinality;
+		jf.right_relation_card = join.children[1]->estimated_cardinality;
+	}
+	jf.estimated_cardinality = static_cast<double>(join.estimated_cardinality);
+
+	// Only populate the denominator-style features if we had any usable equality predicates.
+	if (eq_pred_count > 0) {
+		jf.comparison_type = "EQUAL";
+		jf.numerator = static_cast<double>(MaxValue<idx_t>(jf.left_relation_card, 1)) *
+		              static_cast<double>(MaxValue<idx_t>(jf.right_relation_card, 1));
+		jf.denominator = std::max(1.0, denom_product);
+
+		// Use geometric mean NDV as a representative TDOM feature (keeps scale reasonable)
+		double gm_ndv = std::exp(log_denom_sum / static_cast<double>(eq_pred_count));
+		jf.tdom_value = static_cast<idx_t>(std::max(1.0, gm_ndv));
+		jf.extra_ratio = gm_ndv;
+	}
+
+	RLFeatureCollector::Get().AddJoinFeatures(&join, jf);
 }
 
 void StatisticsPropagator::PropagateStatistics(LogicalAnyJoin &join, unique_ptr<LogicalOperator> &node_ptr) {

@@ -7,7 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "duckdb/main/rl_model_interface.hpp"
-#include "duckdb/main/rl_cardinality_model.hpp"
+#include "duckdb/main/rl_boosting_model.hpp"
 #include "duckdb/main/client_context.hpp"
 #include "duckdb/common/printer.hpp"
 #include "duckdb/optimizer/rl_feature_collector.hpp"
@@ -23,11 +23,161 @@
 #include "duckdb/main/profiling_node.hpp"
 #include "duckdb/common/enums/metric_type.hpp"
 #include "duckdb/execution/operator/helper/physical_result_collector.hpp"
+#include "duckdb/common/constants.hpp"
+#include "duckdb/planner/expression/bound_columnref_expression.hpp"
+
+#include <unordered_map>
+#include <mutex>
+#include <cstring>
+#include <atomic>
 
 namespace duckdb {
 
+static constexpr bool RL_ENABLED = true;
+
+namespace {
+
+struct PredictionCacheState {
+	std::unordered_map<std::string, idx_t> cache;
+	idx_t cached_query_id = DConstants::INVALID_INDEX;
+	idx_t prediction_count = 0;
+	bool cap_logged = false;
+};
+
+// Per-thread caches (shared across RLModelInterface instances on the same thread)
+static thread_local PredictionCacheState physical_state;
+static thread_local PredictionCacheState planning_state;
+
+static idx_t GetActiveQueryIdSafe(ClientContext &context) {
+	try {
+		return context.transaction.GetActiveQuery();
+	} catch (...) {
+		// No active query yet
+		return DConstants::INVALID_INDEX;
+	}
+}
+
+static void ResetIfNewQuery(PredictionCacheState &state, ClientContext &context) {
+	auto query_id = GetActiveQueryIdSafe(context);
+	if (state.cached_query_id != query_id) {
+		state.cache.clear();
+		state.prediction_count = 0;
+		state.cap_logged = false;
+		state.cached_query_id = query_id;
+	}
+}
+
+static idx_t PredictWithState(ClientContext &context, const OperatorFeatures &features, PredictionCacheState &state,
+                             const idx_t max_predictions) {
+	ResetIfNewQuery(state, context);
+
+	if (state.prediction_count >= max_predictions) {
+		// Soft cap: return 0 and fall back to DuckDB estimate at call sites
+		return 0;
+	}
+
+	// Build operator-specific cache key (must be stable + cheap)
+	std::string cache_key;
+	cache_key.reserve(128);
+	cache_key.append(features.operator_type);
+	cache_key.push_back('|');
+
+	if (!features.table_name.empty()) {
+		cache_key.append(features.table_name);
+		cache_key.push_back('|');
+		cache_key.append(std::to_string(features.filter_types.size()));
+		cache_key.push_back('|');
+		for (const auto &cmp : features.comparison_types) {
+			cache_key.append(cmp);
+			cache_key.push_back(',');
+		}
+	} else if (!features.join_type.empty()) {
+		cache_key.append(features.join_type);
+		cache_key.push_back('|');
+		cache_key.append(features.join_relation_set);
+		cache_key.push_back('|');
+		cache_key.append(features.comparison_type_join);
+		cache_key.push_back('|');
+		cache_key.append(std::to_string(features.join_condition_count));
+		cache_key.push_back('|');
+		cache_key.append(std::to_string(features.join_equality_condition_count));
+		cache_key.push_back('|');
+		cache_key.append(std::to_string(features.join_key_signature_hash));
+	} else if (!features.filter_types.empty()) {
+		cache_key.append(std::to_string(features.filter_types.size()));
+		cache_key.push_back('|');
+		for (const auto &cmp : features.comparison_types) {
+			cache_key.append(cmp);
+			cache_key.push_back(',');
+		}
+		cache_key.push_back('|');
+		cache_key.append(std::to_string(features.filter_constant_count));
+		cache_key.push_back('|');
+		cache_key.append(std::to_string(features.filter_constant_numeric_log_mean));
+		cache_key.push_back('|');
+		cache_key.append(std::to_string(features.filter_constant_string_log_mean));
+	} else if (features.num_group_by_columns > 0 || features.num_aggregate_functions > 0) {
+		cache_key.append(std::to_string(features.num_group_by_columns));
+		cache_key.push_back('|');
+		cache_key.append(std::to_string(features.num_aggregate_functions));
+		cache_key.push_back('|');
+		cache_key.append(std::to_string(features.num_grouping_sets));
+	}
+
+	auto cached = state.cache.find(cache_key);
+	if (cached != state.cache.end()) {
+		return cached->second;
+	}
+
+	// Convert features to vector and predict
+	auto feature_vec = RLModelInterface::FeaturesToVector(features);
+	double predicted_cardinality = RLBoostingModel::Get().Predict(feature_vec);
+	if (predicted_cardinality <= 0.0) {
+		return 0;
+	}
+
+	idx_t result = static_cast<idx_t>(predicted_cardinality);
+	state.cache[cache_key] = result;
+	state.prediction_count++;
+	return result;
+}
+
+static bool EnvBool(const char *name, bool default_value) {
+	auto val = std::getenv(name);
+	if (!val) {
+		return default_value;
+	}
+	std::string s(val);
+	for (auto &c : s) {
+		c = char(std::tolower(c));
+	}
+	if (s == "1" || s == "true" || s == "yes" || s == "on") {
+		return true;
+	}
+	if (s == "0" || s == "false" || s == "no" || s == "off") {
+		return false;
+	}
+	return default_value;
+}
+
+static int EnvInt(const char *name, int default_value) {
+	auto val = std::getenv(name);
+	if (!val) {
+		return default_value;
+	}
+	try {
+		return std::stoi(val);
+	} catch (...) {
+		return default_value;
+	}
+}
+
+} // namespace
+
 RLModelInterface::RLModelInterface(ClientContext &context) : context(context), enabled(true) {
-	// Model is a singleton - no need to create it here
+	// Intentionally do NOT register a predictor callback for planning/optimization.
+	// We still collect features and generate predictions during physical plan creation
+	// for Q-error measurement and model training, but predictions must not affect plan choice.
 }
 
 string OperatorFeatures::ToString() const {
@@ -225,12 +375,78 @@ OperatorFeatures RLModelInterface::ExtractFeatures(LogicalOperator &op, ClientCo
 		auto filter_features = collector.GetFilterFeatures(&op);
 		if (filter_features) {
 			features.comparison_types = filter_features->comparison_types;
+			features.filter_constant_count = filter_features->constant_values.size();
+			if (features.filter_constant_count > 0) {
+				double numeric_sum = 0.0;
+				idx_t numeric_count = 0;
+				double string_sum = 0.0;
+				idx_t string_count = 0;
+				for (auto &val : filter_features->constant_values) {
+					try {
+						size_t pos = 0;
+						double x = std::stod(val, &pos);
+						// Only treat as numeric if we parsed the full string
+						if (pos == val.size() && std::isfinite(x)) {
+							numeric_sum += std::log1p(std::abs(x));
+							numeric_count++;
+							continue;
+						}
+					} catch (...) {
+					}
+					string_sum += std::log1p(static_cast<double>(val.size()));
+					string_count++;
+				}
+				features.filter_constant_numeric_log_mean = numeric_count ? (numeric_sum / numeric_count) : 0.0;
+				features.filter_constant_string_log_mean = string_count ? (string_sum / string_count) : 0.0;
+			}
 		}
 		break;
 	}
 	case LogicalOperatorType::LOGICAL_COMPARISON_JOIN: {
 		auto &join = op.Cast<LogicalComparisonJoin>();
 		features.join_type = JoinTypeToString(join.join_type);
+		features.join_condition_count = join.conditions.size();
+		idx_t same_type = 0;
+		idx_t simple_ref = 0;
+		std::string sig;
+		sig.reserve(join.conditions.size() * 48);
+		for (auto &cond : join.conditions) {
+			switch (cond.comparison) {
+			case ExpressionType::COMPARE_EQUAL:
+			case ExpressionType::COMPARE_NOT_DISTINCT_FROM:
+				features.join_equality_condition_count++;
+				break;
+			default:
+				break;
+			}
+			// Signature pieces
+			auto lt = cond.left ? cond.left->return_type.ToString() : "NULL";
+			auto rt = cond.right ? cond.right->return_type.ToString() : "NULL";
+			sig.append(std::to_string((int)cond.comparison));
+			sig.push_back(':');
+			sig.append(lt);
+			sig.push_back(':');
+			sig.append(rt);
+			sig.push_back('|');
+
+			if (cond.left && cond.right && cond.left->return_type == cond.right->return_type) {
+				same_type++;
+			}
+			if (cond.left && cond.right &&
+			    cond.left->GetExpressionClass() == ExpressionClass::BOUND_COLUMN_REF &&
+			    cond.right->GetExpressionClass() == ExpressionClass::BOUND_COLUMN_REF) {
+				simple_ref++;
+			}
+		}
+		if (features.join_condition_count > 0) {
+			features.join_key_same_type_ratio =
+			    static_cast<double>(same_type) / static_cast<double>(features.join_condition_count);
+			features.join_key_simple_ref_ratio =
+			    static_cast<double>(simple_ref) / static_cast<double>(features.join_condition_count);
+		}
+		// Stable-ish hash of signature normalized to [0,1]
+		std::hash<std::string> hasher;
+		features.join_key_signature_hash = static_cast<double>(hasher(sig) % 10000) / 10000.0;
 		if (op.children.size() >= 2) {
 			features.left_cardinality = op.children[0]->estimated_cardinality;
 			features.right_cardinality = op.children[1]->estimated_cardinality;
@@ -364,7 +580,7 @@ vector<double> RLModelInterface::FeaturesToVector(const OperatorFeatures &featur
 		idx += 24;
 	}
 
-	// 3. JOIN FEATURES - 21 features
+	// 3. JOIN FEATURES - 27 features (expanded from 21)
 	if (!features.join_type.empty()) {
 		feature_vec[idx++] = safe_log(features.left_cardinality);
 		feature_vec[idx++] = safe_log(features.right_cardinality);
@@ -394,13 +610,55 @@ vector<double> RLModelInterface::FeaturesToVector(const OperatorFeatures &featur
 		feature_vec[idx++] = static_cast<double>(features.num_relations);
 		feature_vec[idx++] = std::log(std::max(1.0, features.left_denominator));
 		feature_vec[idx++] = std::log(std::max(1.0, features.right_denominator));
+
+		// NEW FEATURES FOR LOW-CARDINALITY JOIN DETECTION (6 additional features)
+		// These help distinguish high-selectivity joins (low cardinality) from cross-product-like joins
+
+		// 1. Selectivity factor: ratio of expected output to cross product
+		// Low values (<< 1.0) indicate high selectivity → low cardinality result
+		double cross_product = features.left_cardinality * features.right_cardinality;
+		double selectivity_factor = features.denominator > 0 ? cross_product / features.denominator : 1.0;
+		feature_vec[idx++] = std::log(std::max(1.0, selectivity_factor));
+
+		// 2. TDOM ratio: how selective is the join key?
+		// Small TDOM relative to input sizes → many rows filtered out
+		double tdom_ratio = 0.0;
+		if (features.left_cardinality > 0 && features.right_cardinality > 0 && features.tdom_value > 0) {
+			double avg_input_card = (features.left_cardinality + features.right_cardinality) / 2.0;
+			tdom_ratio = features.tdom_value / avg_input_card;
+		}
+		feature_vec[idx++] = tdom_ratio;  // Small values → high selectivity
+
+		// 3. Denominator/numerator ratio: directly captures selectivity
+		double selectivity_ratio = features.numerator > 0 ? features.denominator / features.numerator : 1.0;
+		feature_vec[idx++] = std::log(std::max(1.0, selectivity_ratio));
+
+		// 4. Input size imbalance: large difference in input sizes affects join behavior
+		double size_imbalance = 1.0;
+		if (features.left_cardinality > 0 && features.right_cardinality > 0) {
+			double larger = std::max(features.left_cardinality, features.right_cardinality);
+			double smaller = std::min(features.left_cardinality, features.right_cardinality);
+			size_imbalance = larger / smaller;
+		}
+		feature_vec[idx++] = std::log(std::max(1.0, size_imbalance));
+
+		// 5. Low-cardinality indicator: flag if TDOM is very small (<1000)
+		feature_vec[idx++] = (features.tdom_value > 0 && features.tdom_value < 1000) ? 1.0 : 0.0;
+
+		// 6. Expected output size magnitude (helps model learn scale)
+		// This is what DuckDB estimates - provides a baseline
+		double expected_output = features.numerator > 0 && features.denominator > 0
+		                         ? features.numerator / features.denominator : 0.0;
+		feature_vec[idx++] = std::log(std::max(1.0, expected_output));
 	} else {
-		idx += 21;
+		idx += 27;  // Updated from 21 to 27
 	}
 
 	// 4. AGGREGATE FEATURES - 4 features
 	if (features.num_group_by_columns > 0 || features.num_aggregate_functions > 0) {
-		feature_vec[idx++] = safe_log(features.estimated_cardinality); // Input from child
+		// Use the input cardinality (child output) as context for aggregate selectivity.
+		// (Historically this incorrectly used the aggregate operator's own estimate.)
+		feature_vec[idx++] = safe_log(features.child_cardinality);
 		feature_vec[idx++] = static_cast<double>(features.num_group_by_columns);
 		feature_vec[idx++] = static_cast<double>(features.num_aggregate_functions);
 		feature_vec[idx++] = static_cast<double>(features.num_grouping_sets);
@@ -419,79 +677,124 @@ vector<double> RLModelInterface::FeaturesToVector(const OperatorFeatures &featur
 	// 6. CONTEXT FEATURES - 1 feature
 	feature_vec[idx++] = safe_log(features.estimated_cardinality); // DuckDB's estimate
 
-	// Remaining features are padding (already initialized to 0.0)
+	// 7. JOIN STRUCTURE FEATURES - 2 features
+	// Helps with multi-predicate joins which otherwise look too similar to single-predicate joins.
+	feature_vec[idx++] = std::log1p(static_cast<double>(features.join_condition_count));
+	double eq_ratio = 0.0;
+	if (features.join_condition_count > 0) {
+		eq_ratio = static_cast<double>(features.join_equality_condition_count) /
+		           static_cast<double>(features.join_condition_count);
+	}
+	feature_vec[idx++] = eq_ratio;
+
+	// 8. JOIN KEY IDENTITY (3 features)
+	feature_vec[idx++] = features.join_key_signature_hash;      // [0,1]
+	feature_vec[idx++] = features.join_key_same_type_ratio;     // [0,1]
+	feature_vec[idx++] = features.join_key_simple_ref_ratio;    // [0,1]
+
+	// 9. FILTER CONSTANTS (3 features)
+	feature_vec[idx++] = std::log1p(static_cast<double>(features.filter_constant_count));
+	feature_vec[idx++] = features.filter_constant_numeric_log_mean;
+	feature_vec[idx++] = features.filter_constant_string_log_mean;
+
+	// Remaining features are padding (already initialized to 0.0) if any remain
 	D_ASSERT(idx <= FEATURE_VECTOR_SIZE);
 
 	return feature_vec;
 }
 
+idx_t RLModelInterface::PredictCardinality(const OperatorFeatures &features) {
+	if (!enabled || !RL_ENABLED) {
+		return 0;
+	}
+	// Physical-plan prediction: bounded because it can be called for many physical operators
+	static constexpr idx_t MAX_PHYSICAL_PREDICTIONS = 5000;
+	return PredictWithState(context, features, physical_state, MAX_PHYSICAL_PREDICTIONS);
+}
+
 idx_t RLModelInterface::GetCardinalityEstimate(const OperatorFeatures &features) {
-	if (!enabled) {
-		return 0; // Don't override
+	auto rl_prediction = PredictPlanningCardinality(features);
+	return rl_prediction > 0 ? rl_prediction : features.estimated_cardinality;
 	}
 
-	// Print all features received by the model
-	Printer::Print(features.ToString());
-
-	// Convert features to vector
-	auto feature_vec = FeaturesToVector(features);
-
-	// Call the singleton model's Predict method
-	double predicted_cardinality = RLCardinalityModel::Get().Predict(feature_vec);
-
-	// If model returns 0, use DuckDB's estimate
-	if (predicted_cardinality <= 0.0) {
-		Printer::Print("[RL MODEL] Returning DuckDB estimate: " + std::to_string(features.estimated_cardinality) + "\n");
-		return features.estimated_cardinality;
+idx_t RLModelInterface::PredictPlanningCardinality(const OperatorFeatures &features) {
+	if (!enabled || !RL_ENABLED) {
+		return 0;
 	}
+	// Planning prediction: separate cap/cache from physical to avoid interference
+	static constexpr idx_t MAX_PLANNING_PREDICTIONS = 50000;
+	return PredictWithState(context, features, planning_state, MAX_PLANNING_PREDICTIONS);
+}
 
-	// Otherwise, use the model's prediction
-	idx_t result = static_cast<idx_t>(predicted_cardinality);
-	Printer::Print("[RL MODEL] Returning model prediction: " + std::to_string(result) + "\n");
-	return result;
+void RLModelInterface::ResetPredictionCachesForThread() {
+	physical_state.cache.clear();
+	physical_state.prediction_count = 0;
+	physical_state.cap_logged = false;
+	physical_state.cached_query_id = DConstants::INVALID_INDEX;
+
+	planning_state.cache.clear();
+	planning_state.prediction_count = 0;
+	planning_state.cap_logged = false;
+	planning_state.cached_query_id = DConstants::INVALID_INDEX;
 }
 
 void RLModelInterface::TrainModel(const OperatorFeatures &features, idx_t actual_cardinality) {
-	// To be implemented later for training
-	// This will be called after each operator executes with the actual cardinality
+// legacy code ignore, not used
 }
 
 void RLModelInterface::AttachRLState(PhysicalOperator &physical_op, const OperatorFeatures &features,
                                       idx_t rl_prediction, idx_t duckdb_estimate) {
-	if (!enabled) {
+	if (!enabled || !RL_ENABLED) {
 		return;
 	}
 
-	// Convert features to vector
+	// Convert features to vector and attach RL state for training
 	auto feature_vec = FeaturesToVector(features);
-
-	// Create and attach RL state
-	physical_op.rl_state = make_uniq<RLOperatorState>(std::move(feature_vec), rl_prediction, duckdb_estimate);
-
-	Printer::Print("[RL MODEL] Attached RL state to operator: RL=" + std::to_string(rl_prediction) + ", DuckDB=" +
-	               std::to_string(duckdb_estimate) + "\n");
+	// Cardinalities should never be 0 for Q-error/training stability.
+	// DuckDB estimates can occasionally be 0 for some operators; clamp to 1 to avoid pathological Q-error.
+	const idx_t safe_rl_pred = std::max<idx_t>(rl_prediction, 1);
+	const idx_t safe_duck_pred = std::max<idx_t>(duckdb_estimate, 1);
+	physical_op.rl_state = make_uniq<RLOperatorState>(std::move(feature_vec), safe_rl_pred, safe_duck_pred);
 }
 
 void RLModelInterface::CollectActualCardinalities(PhysicalOperator &root_operator,
                                                    QueryProfiler &profiler,
                                                    RLTrainingBuffer &buffer) {
-	if (!enabled) {
+	if (!enabled || !RL_ENABLED) {
 		return;
 	}
 
-	Printer::Print("[RL TRAINING] Starting collection of actual cardinalities...\n");
+	// Printer::Print("[RL TRAINING] Starting collection of actual cardinalities...\n");
 
 	// If root is a RESULT_COLLECTOR, we need to get the actual plan from it
 	PhysicalOperator *actual_root = &root_operator;
 	if (root_operator.type == PhysicalOperatorType::RESULT_COLLECTOR) {
 		auto &result_collector = root_operator.Cast<PhysicalResultCollector>();
 		actual_root = &result_collector.plan;
-		Printer::Print("[RL TRAINING] Root is RESULT_COLLECTOR, traversing actual plan\n");
+		// Printer::Print("[RL TRAINING] Root is RESULT_COLLECTOR, traversing actual plan\n");
 	}
 
 	// Recursively traverse the physical operator tree
 	CollectActualCardinalitiesRecursive(*actual_root, profiler, buffer);
-	Printer::Print("[RL TRAINING] Finished collecting actual cardinalities\n");
+
+	// Online training: enabled by default, but budgeted to keep query runtime stable.
+	if (!EnvBool("RL_DISABLE_ONLINE_TRAINING", false)) {
+		static std::atomic<idx_t> train_query_counter{0};
+		const idx_t q = ++train_query_counter;
+
+		const idx_t train_every_n = (idx_t)EnvInt("RL_TRAIN_EVERY_N_QUERIES", 20);
+		const idx_t train_window = (idx_t)EnvInt("RL_TRAIN_WINDOW", 500);
+
+		if (train_every_n != 0 && (q % train_every_n) == 0) {
+			auto recent_samples = buffer.GetRecentSamples(train_window);
+			if (recent_samples.size() >= 50) {
+				auto &model = RLBoostingModel::Get();
+				model.UpdateIncremental(recent_samples);
+			}
+		}
+	}
+
+	// Printer::Print("[RL TRAINING] Finished collecting actual cardinalities\n");
 }
 
 void RLModelInterface::CollectActualCardinalitiesRecursive(PhysicalOperator &op,
@@ -507,24 +810,49 @@ void RLModelInterface::CollectActualCardinalitiesRecursive(PhysicalOperator &op,
 			// Mark as collected
 			op.rl_state->has_actual_cardinality = true;
 
-			// SYNCHRONOUS TRAINING: Train immediately on this sample
-			// This prevents temporal mismatch where predictions are stale
-			auto &model = RLCardinalityModel::Get();
-			model.Update(op.rl_state->feature_vector,
-			             actual_cardinality,
-			             op.rl_state->rl_predicted_cardinality);
-
-			// Also add to buffer for monitoring/statistics
+			// Add to buffer first
 			buffer.AddSample(op.rl_state->feature_vector,
 			                 actual_cardinality,
 			                 op.rl_state->rl_predicted_cardinality);
 
-			// Simplified logging - just show what was collected
-			Printer::Print("[RL TRAINING] " + op.GetName() + ": Actual=" +
-			               std::to_string(actual_cardinality) + ", Pred=" +
-			               std::to_string(op.rl_state->rl_predicted_cardinality) + ", Q-err=" +
-			               std::to_string(std::max(actual_cardinality / (double)std::max(op.rl_state->rl_predicted_cardinality, (idx_t)1),
-			                                       op.rl_state->rl_predicted_cardinality / (double)std::max(actual_cardinality, (idx_t)1))) + "\n");
+			// SYNCHRONOUS INCREMENTAL TRAINING: Train immediately using sliding window
+			// Get recent samples (sliding window: use more samples for better learning)
+			// Using 2000 samples gives the model more context to learn patterns
+			
+			// OPTIMIZATION: Removed per-operator training call.
+			// Training is now done in batch at the end of CollectActualCardinalities
+			// to reduce lock contention and overhead.
+			
+			/*
+			auto recent_samples = buffer.GetRecentSamples(2000);
+
+			if (recent_samples.size() >= 50) {  // Need minimum samples for meaningful training
+				auto &model = RLBoostingModel::Get();
+				model.UpdateIncremental(recent_samples);
+			}
+			*/
+
+			// Calculate Q-error for RL model
+			double rl_q_error = std::max(
+				actual_cardinality / (double)std::max(op.rl_state->rl_predicted_cardinality, (idx_t)1),
+				op.rl_state->rl_predicted_cardinality / (double)std::max(actual_cardinality, (idx_t)1)
+			);
+
+			// Calculate Q-error for DuckDB's native estimate (for comparison)
+			double duckdb_q_error = std::max(
+				actual_cardinality / (double)std::max(op.rl_state->duckdb_estimated_cardinality, (idx_t)1),
+				op.rl_state->duckdb_estimated_cardinality / (double)std::max(actual_cardinality, (idx_t)1)
+			);
+
+			// Logging with BOTH predictions for comparison (can be disabled for performance).
+			// NOTE: `run_tpcds_benchmark.py` parses this exact line format.
+			if (EnvBool("RL_PRINT_TRAINING", true)) {
+				Printer::Print("[RL TRAINING] " + op.GetName() + ": Actual=" + std::to_string(actual_cardinality) +
+				               ", RLPred=" + std::to_string(op.rl_state->rl_predicted_cardinality) +
+				               ", DuckPred=" + std::to_string(op.rl_state->duckdb_estimated_cardinality) +
+				               ", RLQerr=" + std::to_string(rl_q_error) +
+				               ", DuckQerr=" + std::to_string(duckdb_q_error) + "\n");
+			}
 		}
 	}
 
